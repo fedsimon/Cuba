@@ -1,6 +1,5 @@
 package Casas;
 
-import Permutas.Permutas_Main;
 import java.io.*;
 import java.text.Normalizer;
 import java.util.Hashtable;
@@ -17,7 +16,6 @@ public class Casas_Main {
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
     public static Hashtable<String, String> hasht2 = new Hashtable<String, String>();
-    
     public static String headers = "Green Format Dummy, Date Published (From Dictionary),"
             + "I'm Buying Dummy (1 means they are looking to buy),"
             + "Apartamento Dummy, Casa Dummy, "
@@ -34,14 +32,16 @@ public class Casas_Main {
             + "Contact(Green Format Only), Publish Date (Green Format Only), Date of Scrape, Filepath \n";
 
     public static void main(String[] args) throws IOException {
-        ////System.out.println("SUP");
         Casas_Main cubc = new Casas_Main();
         cubc.createDictionary();
         cubc.textCreator();
-        //String theURL = "file://localhost/Users/federicocsimon/Dropbox/CubaHousing/CubaData/Cubisima/"
-        //+"02Dec2011 - CB/permutas/anuncios";        
+        System.out.println("Done");
     }
-    public static void createDictionary() throws FileNotFoundException, IOException {
+
+    //********
+    //Reads the two dictionaries (municipio and date) and makes it into a hashtable.
+    public static void createDictionary() throws FileNotFoundException,
+            IOException {
         Casas_Main fixer2 = new Casas_Main();
         String fn = onMac + "Casas_Date_Dictionary.csv";
         //"C:/Documents and Settings/fsimon0/My Documents/CubaData Original/RentasDateDictionary.csv";
@@ -50,7 +50,6 @@ public class Casas_Main {
 
         BufferedReader areader = new BufferedReader(new FileReader(fn));
         BufferedReader munireader = new BufferedReader(new FileReader(municfn));
-        //Scanner dateDictionary = new Scanner (fn);
 
         String sCurrentLine;
         String sCurrentLineMun;
@@ -72,9 +71,9 @@ public class Casas_Main {
             hasht2.put(key2, object2);
         }
     }
-    
-    public String myStringExtract(String theURL) {
-        
+    //**********
+
+    public String getDateFromDict(String theURL) {
         //Find the date using the dictionary.
         Pattern pattern = Pattern.compile("!(.*?).htm");
         Matcher matcher = pattern.matcher(theURL);
@@ -85,10 +84,10 @@ public class Casas_Main {
                 dateFromDict = hasht1.get(matcher.group(1));
             }
         }
-        
-        Casas_Main fixer = new Casas_Main();
+        return dateFromDict;
+    }
 
-        //CHECK THAT WE'RE IN GREEN FORMAT
+    public String getGreenIf(String theURL) {
         FilterBean green = new FilterBean();
         TagNameFilter greenTNF = new TagNameFilter("span");
         HasAttributeFilter greenAttribute = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelDetalle");
@@ -96,11 +95,10 @@ public class Casas_Main {
         green.setFilters(new NodeFilter[]{greenAND});
         green.setURL(theURL);
         String greenif = green.getText();
-        //System.out.println("This is what greenif looks like:" + greenif);
+        return greenif;
+    }
 
-
-        // Rooms & Bathrooms
-        //<editor-fold>
+    public String[] getCasa_s(String theURL) {
         FilterBean casa = new FilterBean();
         TagNameFilter casaTNF = new TagNameFilter("span");
         HasAttributeFilter casaAttribute = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelBasicInfo0");
@@ -115,10 +113,10 @@ public class Casas_Main {
         casa_s = casa_s.replace("½", ".5");
         casa_s = casa_s.replace("cuartos", "");
         casa_s = casa_s.replace("cuarto", "");
-        casa_s = casa_s.replace("Habitacion", "");
         casa_s = casa_s.replace("Habitaciones", "");
-        casa_s = casa_s.replace("Habitación", "");
+        casa_s = casa_s.replace("Habitacion", "");
         casa_s = casa_s.replace("Habitaciónes", "");
+        casa_s = casa_s.replace("Habitación", "");
         casa_s = casa_s.replace("cuartos", "");
         casa_s = casa_s.replace("terreno", "");
         casa_s = casa_s.replace("?", "");
@@ -146,24 +144,21 @@ public class Casas_Main {
         if ((casa_s.contains("Penthouse")) || casa_s.contains("penthouse")) {
             penthdum_s = "1";
         }
+
         casa_s = casa_s.replace("Apartamento", "");
         casa_s = casa_s.replace("Casa", "");
         casa_s = casa_s.replace("Terreno", "");
         casa_s = casa_s.replace("Prop horizontal", "");
         casa_s = casa_s.replace("Penthouse", "");
 
+        String[] retarr = {casa_s, apdum_s, casdum_s, terdum_s, prophdum_s,
+            penthdum_s};
 
-        String rooms_s = "0";
-        String bathrooms_s = "0";
-        String[] smth = casa_s.split("-");
-        rooms_s = smth[0];
-        if (smth.length > 1) {
-            bathrooms_s = smth[1];
-        }
-        //</editor-fold>
+        return retarr;
+    }
 
-        // Prices
-        //<editor-fold>
+    public String[] getPrices(String theURL) {
+
         FilterBean precio = new FilterBean();
         TagNameFilter precioTNF = new TagNameFilter("span");
         HasAttributeFilter precioAttribute = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelPrecio0");
@@ -174,9 +169,11 @@ public class Casas_Main {
         precio.setURL(theURL);
         String precio_s = precio.getText();
         String precio_vendido = "0";
+
         if (precio_s.contains("vendido")) {
             precio_vendido = "1";
         }
+
         precio_s = precio_s.replace("(vendido)", "");
         precio_s = precio_s.replace(",", ";");
         precio_s = precio_s.replace("\n", "");
@@ -188,6 +185,7 @@ public class Casas_Main {
         precio_s = precio_s.trim();
         String precio_a = precio_s;
         precio_a = precio_a.replaceAll("\\D+", "");
+
         if (!precio_a.equals("")) {
             precio_i = java.lang.Integer.parseInt(precio_a);
         }
@@ -195,11 +193,12 @@ public class Casas_Main {
         if ((precio_i < 100) || (precio_s.equals("")) || precio_s.equals(" ")) {
             precio_sdummy = "1";
         }
-        //System.out.println("precios_s" + precio_s);
-        //</editor-fold>
 
-        //Metros
-        //<editor-fold>
+        String[] retarr = {precio_s, precio_vendido, precio_sdummy};
+        return retarr;
+    }
+
+    public String getMetros_s(String theURL) {
         FilterBean metros = new FilterBean();
         TagNameFilter metrosTNF = new TagNameFilter("span");
         HasAttributeFilter metrosAttribute = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelMetros0");
@@ -213,11 +212,11 @@ public class Casas_Main {
         metros_s = metros_s.replace("\n", "");
         metros_s = metros_s.replace("Metros²:", "");
         metros_s = metros_s.replace("-", "0");
-        //System.out.println("metros_s" + metros_s);
-        //</editor-fold>
 
-        //Cantidad de Personas
-        //<editor-fold>
+        return metros_s;
+    }
+
+    public String getCp_s(String theURL) {
         FilterBean cpersonas = new FilterBean();
         TagNameFilter cpTNF = new TagNameFilter("span");
         HasAttributeFilter cpAttribute = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantPers0");
@@ -231,12 +230,10 @@ public class Casas_Main {
         cp_s = cp_s.replace("-", "0");
         cp_s = cp_s.replace("\n", ";");
         cp_s = cp_s.replace("Cantidad de personas que pueden vivir:", "");
-        //System.out.println("cp_s" + cp_s);
+        return cp_s;
+    }
 
-        //</editor-fold>
-
-        //Estado Fisico
-        //<editor-fold>
+    public String getEstado_s(String theURL) {
         FilterBean estado = new FilterBean();
         TagNameFilter estadoTNF = new TagNameFilter("span");
         HasAttributeFilter estadoAttribute = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelEstado0");
@@ -252,12 +249,10 @@ public class Casas_Main {
         estado_s = estado_s.replace("Ó", "O");
         estado_s = estado_s.replace("ó", "o");
         estado_s = estado_s.replace("-", "0");
-        //System.out.println("estado_s" + estado_s);
+        return estado_s;
+    }
 
-        //</editor-fold>
-
-        //Direccion
-        //<editor-fold>
+    public String getD_s(String theURL) {
         FilterBean direccion = new FilterBean();
         TagNameFilter dTNF = new TagNameFilter("span");
         HasAttributeFilter dAttribute = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelDireccion0");
@@ -274,10 +269,10 @@ public class Casas_Main {
         d_s = d_s.replace("Dirección: ", "");
         //System.out.println("d_s" + d_s);
 
-        //</editor-fold>
+        return d_s;
+    }
 
-        //Observaciones
-        //<editor-fold>
+    public String getO_s(String theURL) {
         FilterBean observaciones = new FilterBean();
         TagNameFilter oTNF = new TagNameFilter("span");
         HasAttributeFilter oAttribute = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelObservaciones0");
@@ -292,6 +287,56 @@ public class Casas_Main {
         o_s = o_s.replace("\n", ";");
         o_s = o_s.replace("Observaciones: ", "");
         o_s = o_s.replace("-", "0");
+
+        return o_s;
+    }
+
+    public String myStringExtract(String theURL) {
+
+        //Publish date from the dictionary
+        String dateFromDict = getDateFromDict(theURL);
+        
+        //For using an accentfixer later
+        Casas_Main fixer = new Casas_Main();
+        
+        //Check we're in green format
+        String greenif = getGreenIf(theURL);
+        
+        // Rooms & bathrooms & dummys
+        String[] aret = getCasa_s(theURL);
+        String casa_s = aret[0];
+        String apdum_s = aret[1];
+        String casdum_s = aret[2];
+        String terdum_s = aret[3];
+        String prophdum_s = aret[4];
+        String penthdum_s = aret[5];
+        
+        //Bathrooms
+        String rooms_s = "0";
+        String bathrooms_s = "0";
+        String[] smth = casa_s.split("-");
+        rooms_s = smth[0];
+        
+        //*********
+        //If the array contains more than one thing, then the second thing is the number of bathrooms.
+        if (smth.length > 1) {bathrooms_s = smth[1];} 
+        //*********
+        // Prices
+        String[] pret = getPrices(theURL);
+        String precio_s = pret[0];
+        String precio_vendido = pret[1];
+        String precio_sdummy = pret[2];
+        //Metros
+        String metros_s = getMetros_s(theURL);
+        //Cantidad de Personas
+        String cp_s = getCp_s(theURL);
+        //Estado Fisico
+        String estado_s = getEstado_s(theURL);
+        //Direccion
+        String d_s = getD_s(theURL);
+        //Observaciones
+        //<editor-fold>
+        String o_s = getO_s(theURL);
         String sch_s = "0";
         String pk_s = "0";
         String bch_s = "0";
@@ -319,9 +364,6 @@ public class Casas_Main {
         fb.setFilters(new NodeFilter[]{both});
         fb.setURL(theURL);
         String s = fb.getText();
-
-
-
         //</editor-fold>
 
         String meters_green_proc = "";
@@ -389,14 +431,13 @@ public class Casas_Main {
         }
 
         String metros_choice = "";
-        if (!meters_green_proc.equals("") && o_s.equals("")) {
+        if (!meters_green_proc.equals("") && metros_s.equals("")) {
             metros_choice = meters_green_proc;
         } else {
-            metros_choice = o_s;
+            metros_choice = metros_s;
         }
 
         //Get green_price
-
         String precio_choice = "";
 
         FilterBean price_green = new FilterBean();
@@ -558,13 +599,19 @@ public class Casas_Main {
         //</editor-fold>
 
 
-        String[] retArr = new String[]{greenformat_dummy, dateFromDict, buying_dummy, apdum_s, casdum_s, terdum_s,
-            prophdum_s, penthdum_s, rooms_s, bathrooms_choice, precio_choice, precio_vendido, precio_sdummy,
-            metros_choice, cp_s, estado_s, direction_choice, observation_choice, sch_s, pk_s, bch_s, sala, patio, agua,
-            comedor, portal, carposhe, cocina, jardin, azotea_compartida, sala_comedor,
-            piscina, hall, cocina_comedor, garaje, saleta, barbacoa, posibilidad_de_garaje,
+        String[] retArr = new String[]{greenformat_dummy, dateFromDict,
+            buying_dummy, apdum_s, casdum_s, terdum_s,
+            prophdum_s, penthdum_s, rooms_s, bathrooms_choice, precio_choice,
+            precio_vendido, precio_sdummy,
+            metros_choice, cp_s, estado_s, direction_choice, observation_choice,
+            sch_s, pk_s, bch_s, sala, patio, agua,
+            comedor, portal, carposhe, cocina, jardin, azotea_compartida,
+            sala_comedor,
+            piscina, hall, cocina_comedor, garaje, saleta, barbacoa,
+            posibilidad_de_garaje,
             pasillo, azotea_Libre, puntal_alto, puerta_calle, elevador, telefono,
-            tanque_Instalado, balcon, gas_de_la_calle, patinejo, terraza, gas_de_Balon, contact_green, published_green};
+            tanque_Instalado, balcon, gas_de_la_calle, patinejo, terraza,
+            gas_de_Balon, contact_green, published_green};
 
 
         String retStr = "";
@@ -572,7 +619,7 @@ public class Casas_Main {
         for (int i = 0; i < retArr.length; i++) {
             retArr[i] = retArr[i].replace(",", " y");
             retArr[i] = retArr[i].replace(".", "");
-            retArr[i] = fixer.accentFix(retArr[i]);
+            retArr[i] = Casas_Main.accentFix(retArr[i]);
             if (retArr[i].equals("")) {
                 retArr[i] = "0";
             }
@@ -582,7 +629,7 @@ public class Casas_Main {
         return retStr;
     }
 
-    public String accentFix(String str) {
+    public static String accentFix(String str) {
         str = Normalizer.normalize(str, Normalizer.Form.NFD);
         str = str.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
         str = str.trim(); //removes trailing and leading whitespace
@@ -593,85 +640,70 @@ public class Casas_Main {
 
     public void textCreator() throws IOException {
         Casas_Main rvp1 = new Casas_Main();
-
-        // Declare some variables
         String date = "";
         String towrite = "";
         String path = "";
-
-
-        // GET ROOT FILE
+        //*******
+        //Lists all {2011-sept1, etc......}
         File dir1 = new File(onMac);
-        //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/"
         String[] datefolderChildren = dir1.list();
+        //********
 
         String allstring = "";
 
-        // GET ALL date FOLDERS
         for (int i = 1; i < datefolderChildren.length; i++) {
-            if (!datefolderChildren[i].contains("NCB") /*
-                     * && datefolderChildren[i].contains("03Feb2012 - CB")
-                     */) {
+            if (!datefolderChildren[i].contains("NCB")) {
                 date = datefolderChildren[i];
-                // APPLY ALL ALGORITHM TO ALL datefolders
                 String enclosing = onMac + date + "/casas/";
-                //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/"+date+"/casas/"
+
+                //************
+                //Makes array {anuncios, fotos, and all of the html files in that scrape date}
                 File dir = new File(enclosing);
                 String[] individualHTMLChildren = dir.list();
-                ////System.out.println("THISTHISTHIS:" + children[1]);
+                //************
 
-
+                //************
+                //Create text file and writer
                 File theTXTFile = new File(onMac + date + "/Cubisima -" + date + " - Casas.csv");
-                //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/"+date+"/Cubisima -"+date+" - Casas.csv"
-                FileWriter aFileWriter = null;
-                try {
-                    aFileWriter = new FileWriter(theTXTFile);
-                } catch (IOException e1) {
-                }
+                FileWriter aFileWriter = new FileWriter(theTXTFile);
+                //*************
 
-
-                if (aFileWriter != null) {
-                    try {
-                        aFileWriter.write(headers);
-                    } catch (IOException e) {
-                    }
-                }
+                //**************
+                //Write the header
+                aFileWriter.write(headers);
+                //**************
 
                 if (individualHTMLChildren != null) {
                     for (int j = 0; j < individualHTMLChildren.length; j++) {
                         if (individualHTMLChildren[j].startsWith(".")
                                 && !individualHTMLChildren[j].equals("anuncios")
                                 && !individualHTMLChildren[j].equals("administrar.html")) {
-                            continue;
+                            continue; //A.K.A. skip this iteration of the above forloop
                         }
+
                         String fn = enclosing + individualHTMLChildren[j];
+
+                        //********************
+                        //This spits out the progress of casas_main
                         System.out.println("filename:" + fn + "progress:"
                                 + (float) j / individualHTMLChildren.length * 100 + "%" + "-"
                                 + i + "/" + datefolderChildren.length * 100 + "%");
+                        //*********************
 
-                        if (aFileWriter != null) {
-                            try {
-                                path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
-                                towrite = rvp1.myStringExtract(fn) + path + "\n";
-                                aFileWriter.write(towrite);
-                                allstring = allstring + towrite;
-                            } catch (IOException e) {
-                            }
-                        }
+                        path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
+                        towrite = rvp1.myStringExtract(fn) + path + "\n";
+                        aFileWriter.write(towrite);
+                        allstring = allstring + towrite;
                     }
                 }
             }
-        }
 
-        //try {aFileWriter.close();} catch (IOException e) {}
-        File theAllTXTFile = new File(onMac + "CubisimaCB - AllCasas.csv");
-        //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/CubisimaCB - AllCasas.csv"
-        FileWriter allFileWriter = null;
-        try {
-            allFileWriter = new FileWriter(theAllTXTFile);
-        } catch (IOException e1) {
+            //try {aFileWriter.close();} catch (IOException e) {}
+            File theAllTXTFile = new File(onMac + "CubisimaCB - AllCasas.csv");
+            //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/CubisimaCB - AllCasas.csv"
+            FileWriter allFileWriter = new FileWriter(theAllTXTFile);
+            allFileWriter.write(headers);
+            allFileWriter.write(allstring);
         }
-        allFileWriter.write(headers);
-        allFileWriter.write(allstring);
     }
 }
