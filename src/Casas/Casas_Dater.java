@@ -5,7 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.htmlparser.NodeFilter;
@@ -39,8 +41,8 @@ public class Casas_Dater {
 
     //*******
     //this function recursively goes through all of the files {2011-11Sept, ... etc}
-    //and if (the file is a folder, the file doesn't contain "permutas" or "renta")
-    //then it sends the file to extract HTML
+    //and if (the file is a folder, the file doesn't contain "permutas" or "renta"){
+    //then it sends the file to extract HTML}
     public static void iteratorOverAllFiles(File[] files) throws URISyntaxException, ParserException {
         for (File file : files) {
             if (file.isDirectory() && !file.getName().equals("permutas") && !file.getName().equals("renta")) {
@@ -48,7 +50,7 @@ public class Casas_Dater {
             } else {
                 if ((file.getName().equals("buscador.html") || file.getName().equals("index.html"))
                         && !file.getAbsolutePath().contains("renta")) {
-                    //System.out.println(file.getAbsolutePath());
+                    System.out.println(file.getAbsolutePath());
                     extractFromHTML(file.getAbsolutePath());
                 }
             }
@@ -119,20 +121,20 @@ public class Casas_Dater {
         
         //********
         //This makes an array of all of the unique IDs
-        Set <String> toBeFinalSet = new TreeSet <String>();
+        Set <Integer> toBeFinalSet = new TreeSet <Integer>();
         Pattern pattern = Pattern.compile("!(.*?).htm"); //changed this from .html.
         for (String line : linkStringArray) {
             if (line.contains("file:") && !line.contains("index") && !line.contains("administrar")) {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.find()) {
                     //System.out.println(matcher.group(1));
-                    toBeFinalSet.add(matcher.group(1));
+                    toBeFinalSet.add(Integer.parseInt(matcher.group(1)));
                 }
             }
         }
         //********
 
-        String[] finalArrayofCodes = toBeFinalSet.toArray(new String[toBeFinalSet.size()]);
+        Integer[] finalArrayofCodes = toBeFinalSet.toArray(new Integer[toBeFinalSet.size()]);
         //System.out.println("here:" + rawPubExtract);
         String[] finalArrayofDates = rawPubExtract.split("\n");
 
@@ -141,9 +143,9 @@ public class Casas_Dater {
         if (finalArrayofCodes.length == finalArrayofDates.length) {
             for (int w = 0; w < finalArrayofCodes.length; w++) {
                 //System.out.println(finalArrayofCodes.length + "-" + w + "=" + (finalArrayofCodes.length-w));
-                String key = finalArrayofCodes[finalArrayofCodes.length-w-1];
+                String key = finalArrayofCodes[finalArrayofCodes.length-w-1].toString();
                 String value = finalArrayofDates[w];
-                //System.out.println(key + "," + value);
+                System.out.println(key + "," + value);
                 hasht1.put(key, value);
                 //System.out.println(finalArrayofCodes[w] + "," +finalArrayofDates[w]);
             }
