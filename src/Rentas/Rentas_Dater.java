@@ -49,23 +49,14 @@ public class Rentas_Dater {
 
     public static void writeTheHashtableToTextFile() throws IOException {
         File theAllTXTFile = new File(onMac + "Rentas_Date_Dictionary.csv");
-        //"C:/Documents and Settings/fsimon0/My Documents/CubaData Original/Rentas_Date_Dictionary.csv"
-        FileWriter allFileWriter = null;
-        try {
-            allFileWriter = new FileWriter(theAllTXTFile);
-        } catch (IOException e1) {
-        }
+        FileWriter allFileWriter = new FileWriter(theAllTXTFile);
         String toWrite = hasht1.toString();
-        toWrite = toWrite.replaceAll("[{ }]", "");
+        toWrite = toWrite.replaceAll("[{}]", "");
         toWrite = toWrite.replace(",", "\n");
         allFileWriter.write(toWrite);
-        try {
-            allFileWriter.close();
-        } catch (IOException e) {
-        }
+        allFileWriter.close();
     }
-    //********
-    //
+
     public static void extractFromHTML(String theURL) throws URISyntaxException, ParserException {
 
         //********
@@ -104,20 +95,20 @@ public class Rentas_Dater {
         
         //********
         //This makes an array of all of the unique IDs
-        Set <String> toBeFinalSet = new TreeSet <String>();
+        Set <Integer> toBeFinalSet = new TreeSet <Integer>();
         Pattern pattern = Pattern.compile("!(.*?).htm"); //changed this from .html.
         for (String line : linkStringArray) {
             if (line.contains("file:") && !line.contains("index") && !line.contains("administrar")) {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.find()) {
                     //System.out.println(matcher.group(1));
-                    toBeFinalSet.add(matcher.group(1));
+                    toBeFinalSet.add(Integer.parseInt(matcher.group(1)));
                 }
             }
         }
         //********
 
-        String[] finalArrayofCodes = toBeFinalSet.toArray(new String[toBeFinalSet.size()]);
+        Integer[] finalArrayofCodes = toBeFinalSet.toArray(new Integer[toBeFinalSet.size()]);
         //System.out.println("here:" + rawPubExtract);
         String[] finalArrayofDates = rawPubExtract.split("\n");
 
@@ -126,13 +117,12 @@ public class Rentas_Dater {
         if (finalArrayofCodes.length == finalArrayofDates.length) {
             for (int w = 0; w < finalArrayofCodes.length; w++) {
                 //System.out.println(finalArrayofCodes.length + "-" + w + "=" + (finalArrayofCodes.length-w));
-                String key = finalArrayofCodes[finalArrayofCodes.length-w-1];
+                String key = finalArrayofCodes[finalArrayofCodes.length-w-1].toString();
                 String value = finalArrayofDates[w];
-                //System.out.println(key + "," + value);
+                System.out.println(key + "," + value);
                 hasht1.put(key, value);
                 //System.out.println(finalArrayofCodes[w] + "," +finalArrayofDates[w]);
             }
         }
     }
-    //*******
 }
