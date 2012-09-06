@@ -666,7 +666,7 @@ public class Casas_Main {
 
     public static void makeUniqueHashTable (String code, String date, String allInfo) throws ParseException{
         // We need to check if it exists in the table already, and replace if we have a newer date.
-        SimpleDateFormat allParse = new SimpleDateFormat("yyyyddMM");
+        SimpleDateFormat allParse = new SimpleDateFormat("yyyyddMMM");
         SimpleDateFormat allDisplay = new SimpleDateFormat("dd-MM-yyyy");
         String [] thatCalArr = allDisplay.format(allParse.parse(date)).split("-");
         int thisMonth = Integer.parseInt(thatCalArr[1]);		    
@@ -697,7 +697,7 @@ public class Casas_Main {
         String allstring = "";
 
         for (int i = 1; i < datefolderChildren.length; i++) {
-            if (!datefolderChildren[i].contains("NCB")) {
+            if (!datefolderChildren[i].contains("NCB") && !datefolderChildren[i].startsWith(".")) {
                 date = datefolderChildren[i];
                 String enclosing = onMac + date + "/casas/";
 
