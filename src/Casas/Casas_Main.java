@@ -697,7 +697,8 @@ public class Casas_Main {
         String allstring = "";
 
         for (int i = 1; i < datefolderChildren.length; i++) {
-            if (!datefolderChildren[i].contains("NCB") && !datefolderChildren[i].startsWith(".")) {
+            if (!datefolderChildren[i].contains("NCB") && !datefolderChildren[i].startsWith(".") && 
+                    !datefolderChildren[i].endsWith(".csv")) {
                 date = datefolderChildren[i];
                 String enclosing = onMac + date + "/casas/";
 
