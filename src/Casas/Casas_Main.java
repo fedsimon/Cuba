@@ -18,7 +18,7 @@ public class Casas_Main {
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
     public static Hashtable<String, String> hasht2 = new Hashtable<String, String>();
-    public static Hashtable<String, Object[]> forUniqueTable = new Hashtable<String, Object[]>();
+    public static Hashtable<String, String[]> forUniqueTable = new Hashtable<String, String[]>();
     public static String headers = "Green Format Dummy, Date Published (From Dictionary),"
             + "I'm Buying Dummy (1 means they are looking to buy),"
             + "Apartamento Dummy, Casa Dummy, "
@@ -36,7 +36,7 @@ public class Casas_Main {
 
     public static void main(String[] args) throws IOException, ParseException {
         Casas_Main cubc = new Casas_Main();
-        cubc.createDictionary();
+        createDictionary();
         cubc.textCreator();
         cubc.makeTheHashTableFile();
         System.out.println("Done");
@@ -83,10 +83,15 @@ public class Casas_Main {
         allFileWriter.write(headers);
         String completeMinusHeaders = "";
         
-        for (Enumeration<Object[]> e = forUniqueTable.elements(); e.hasMoreElements();){
-            completeMinusHeaders = completeMinusHeaders + e.nextElement()[1];
+        System.out.println("asdkajsdk" + forUniqueTable.get("1901")[1]);
+        
+        Object[] keyArray = forUniqueTable.keySet().toArray();
+        for(Object key : keyArray){
+            completeMinusHeaders = completeMinusHeaders + forUniqueTable.get(key)[1];
         }
+
         allFileWriter.write(completeMinusHeaders);
+        allFileWriter.close();
     }
     
     public String getDateFromDict(String theURL) {
@@ -668,18 +673,26 @@ public class Casas_Main {
         // We need to check if it exists in the table already, and replace if we have a newer date.
         SimpleDateFormat allParse = new SimpleDateFormat("yyyyddMMM");
         SimpleDateFormat allDisplay = new SimpleDateFormat("dd-MM-yyyy");
-        String [] thatCalArr = allDisplay.format(allParse.parse(date)).split("-");
-        int thisMonth = Integer.parseInt(thatCalArr[1]);		    
-	int thisYear = Integer.parseInt(thatCalArr[2]);
-	int thisDay = Integer.parseInt(thatCalArr[0]);
+        String [] thisCalArr = allDisplay.format(allParse.parse(date)).split("-");
+        int thisMonth = Integer.parseInt(thisCalArr[1]);		    
+	int thisYear = Integer.parseInt(thisCalArr[2]);
+	int thisDay = Integer.parseInt(thisCalArr[0]);
         Calendar newDate = new GregorianCalendar(thisYear, thisMonth, thisDay);
 
+        String [] anArr = {allDisplay.format(allParse.parse(date)), allInfo};
         if (forUniqueTable.containsKey(code)){
+            //If the entry exists, make a Calendar out of it
+            String[] insideCalArr = forUniqueTable.get(code)[0].split("-");
+            int insideMonth = Integer.parseInt(insideCalArr[1]);
+            int insideYear = Integer.parseInt(insideCalArr[2]);
+            int insideDAy = Integer.parseInt(insideCalArr[0]);
             if(newDate.after(forUniqueTable.get(code)[0])){
                 forUniqueTable.remove(code);
-                Object [] anArr = {newDate, allInfo};
                 forUniqueTable.put(code, anArr);
             }
+        }
+        else{
+            forUniqueTable.put(code, anArr);
         }
     }
     
