@@ -2,7 +2,9 @@ package Casas;
 
 import java.io.*;
 import java.text.Normalizer;
-import java.util.Hashtable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.htmlparser.NodeFilter;
@@ -16,6 +18,7 @@ public class Casas_Main {
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
     public static Hashtable<String, String> hasht2 = new Hashtable<String, String>();
+    public static Hashtable<String, Object[]> forUniqueTable = new Hashtable<String, Object[]>();
     public static String headers = "Green Format Dummy, Date Published (From Dictionary),"
             + "I'm Buying Dummy (1 means they are looking to buy),"
             + "Apartamento Dummy, Casa Dummy, "
@@ -31,10 +34,11 @@ public class Casas_Main {
             + "Balcon,Gas de la Calle,Patinejo,Terraza,Gas de Balon, "
             + "Contact(Green Format Only), Publish Date (Green Format Only), Date of Scrape, Filepath \n";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
         Casas_Main cubc = new Casas_Main();
         cubc.createDictionary();
         cubc.textCreator();
+        cubc.makeTheHashTableFile();
         System.out.println("Done");
     }
 
@@ -73,6 +77,18 @@ public class Casas_Main {
     }
     //**********
 
+    public void makeTheHashTableFile() throws IOException{
+        File theAllTXTFile = new File(onMac + "Casas-UniqueSpreadsheet.csv");
+        FileWriter allFileWriter = new FileWriter(theAllTXTFile);
+        allFileWriter.write(headers);
+        String completeMinusHeaders = "";
+        
+        for (Enumeration<Object[]> e = forUniqueTable.elements(); e.hasMoreElements();){
+            completeMinusHeaders = completeMinusHeaders + e.nextElement()[1];
+        }
+        allFileWriter.write(completeMinusHeaders);
+    }
+    
     public String getDateFromDict(String theURL) {
         //Find the date using the dictionary.
         Pattern pattern = Pattern.compile("!(.*?).htm");
@@ -85,6 +101,16 @@ public class Casas_Main {
             }
         }
         return dateFromDict;
+    }
+    
+    public String getCodeFromURL (String theURL){
+        String code = "";
+        Pattern pattern = Pattern.compile("!(.*?).htm");
+        Matcher matcher = pattern.matcher(theURL);
+        if (matcher.find()) {
+            code = matcher.group(1);
+        }
+        return code;
     }
 
     public String getGreenIf(String theURL) {
@@ -625,7 +651,7 @@ public class Casas_Main {
             }
             retStr = retStr + retArr[i] + ",";
         }
-
+        
         return retStr;
     }
 
@@ -638,7 +664,26 @@ public class Casas_Main {
         return str;
     }
 
-    public void textCreator() throws IOException {
+    public static void makeUniqueHashTable (String code, String date, String allInfo) throws ParseException{
+        // We need to check if it exists in the table already, and replace if we have a newer date.
+        SimpleDateFormat allParse = new SimpleDateFormat("yyyyddMM");
+        SimpleDateFormat allDisplay = new SimpleDateFormat("dd-MM-yyyy");
+        String [] thatCalArr = allDisplay.format(allParse.parse(date)).split("-");
+        int thisMonth = Integer.parseInt(thatCalArr[1]);		    
+	int thisYear = Integer.parseInt(thatCalArr[2]);
+	int thisDay = Integer.parseInt(thatCalArr[0]);
+        Calendar newDate = new GregorianCalendar(thisYear, thisMonth, thisDay);
+
+        if (forUniqueTable.containsKey(code)){
+            if(newDate.after(forUniqueTable.get(code)[0])){
+                forUniqueTable.remove(code);
+                Object [] anArr = {newDate, allInfo};
+                forUniqueTable.put(code, anArr);
+            }
+        }
+    }
+    
+    public void textCreator() throws IOException, ParseException {
         Casas_Main rvp1 = new Casas_Main();
         String date = "";
         String towrite = "";
@@ -692,6 +737,10 @@ public class Casas_Main {
 
                         path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
                         towrite = rvp1.myStringExtract(fn) + path + "\n";
+                        ///// MAKE UNIQUE HASHTABLE
+                        String code = getCodeFromURL(fn);
+                        makeUniqueHashTable(code, date, towrite);
+                        /////---------------
                         aFileWriter.write(towrite);
                         allstring = allstring + towrite;
                     }
