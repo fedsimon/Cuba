@@ -14,7 +14,7 @@ import org.htmlparser.filters.*;
 // ADDED SOLD DUMMY AFTER PRICE COLUMN HEADER BEFORE SUSPICIOUS
 public class Casas_Main {
 
-    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaData/";
+    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaTest/";
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
     public static Hashtable<String, String> hasht2 = new Hashtable<String, String>();
@@ -733,7 +733,7 @@ public class Casas_Main {
                         //This spits out the progress of casas_main
                         System.out.println("filename:" + fn + "progress:"
                                 + (float) j / individualHTMLChildren.length * 100 + "%" + "-"
-                                + i + "/" + datefolderChildren.length * 100 + "%");
+                                + i + "/" + datefolderChildren.length + "%");
                         //*********************
 
                         path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
