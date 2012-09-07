@@ -37,12 +37,12 @@ public class Collect_All_Codes {
     public static void iterator(File[] firstFile) {
         for (File file : firstFile) {
             if (file.isDirectory() && !file.getName().equals("permutas") && !file.getName().startsWith(".")
-                    && !file.getName().equals("anuncios") && !file.getName().equals("renta")) {
+                    && !file.getName().equals("anuncios")) {
                 iterator(file.listFiles());
             }
             else if (file.getAbsolutePath().contains("casas") && !file.getAbsolutePath().endsWith(".csv") &&
                     !file.getAbsolutePath().contains("index") && !file.getAbsolutePath().contains("suscripcion") &&
-                    !file.getAbsolutePath().contains("renta") && !file.getAbsolutePath().contains("fotos") &&
+                    file.getAbsolutePath().contains("renta") && !file.getAbsolutePath().contains("fotos") &&
                     !file.getAbsolutePath().contains("publicar") && !file.getAbsolutePath().contains("administrar") &&
                     ((file.getAbsolutePath().endsWith(".html") || file.getAbsolutePath().endsWith(".htm")))){
                 extractCode(file);
