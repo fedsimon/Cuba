@@ -1,4 +1,4 @@
-
+/*
 package Test;
 import Permutas.Permutas_Main;
 import java.awt.Button;
@@ -133,7 +133,7 @@ public class Cubisima_Permutas1 extends Frame {
         /* Another way to write same thing if I decide to include "." and other characters.
          * String str = "whatever";
          * str = str.replaceAll('(,)?(.)?(,)?', '');
-         */
+         *
         habS3 = habS3.replace("½",".5");
 
         
@@ -223,7 +223,7 @@ public class Cubisima_Permutas1 extends Frame {
          * a = a.replace("ó", "o");
          * a = a.replace("á", "a");
          * etc...
-         */
+         *
     }
 
 
@@ -284,7 +284,7 @@ public class CodigoDater {
         
         // GET ALL date FOLDERS
         for (int i=1; i< datefolderChildren.length; i++){
-            if (true/*!datefolderChildren[i].contains("NCB")*//*&& !children1[i].contains("CB?")*/){
+            if (true/*!datefolderChildren[i].contains("NCB")*//*&& !children1[i].contains("CB?")*){
                 date = datefolderChildren[i]; 
                 // APPLY ALL ALGORITHM TO ALL datefolders
                 String enclosing = "/Users/federicocsimon/Dropbox/CubaHousing/CubaData/Cubisima/"+date+"/permutas/anuncios/";
@@ -320,3 +320,4 @@ public class CodigoDater {
         allFileWriter.write(allstring);
     }
 }
+*/
