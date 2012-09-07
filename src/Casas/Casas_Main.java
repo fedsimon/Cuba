@@ -112,6 +112,7 @@ public class Casas_Main {
         if (matcher.find()) {
             code = matcher.group(1);
         }
+        code = code.replaceAll( "[^\\d]", "" );
         return code;
     }
 
@@ -734,7 +735,10 @@ public class Casas_Main {
                     for (int j = 0; j < individualHTMLChildren.length; j++) {
                         if (individualHTMLChildren[j].startsWith(".")
                                 && !individualHTMLChildren[j].equals("anuncios")
-                                && !individualHTMLChildren[j].equals("administrar.html")) {
+                                && !individualHTMLChildren[j].contains("administrar.htm")
+                                && !individualHTMLChildren[j].contains("suscripcion")
+                                && !individualHTMLChildren[j].contains("index")
+                                && !individualHTMLChildren[j].contains("publicar")) {
                             continue; //A.K.A. skip this iteration of the above forloop
                         }
 
