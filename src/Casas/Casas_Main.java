@@ -58,7 +58,7 @@ public class Casas_Main {
         String sCurrentLine;
         String sCurrentLineMun;
         while ((sCurrentLine = areader.readLine()) != null) {
-            System.out.println(sCurrentLine);
+            //System.out.println(sCurrentLine);
             String key = sCurrentLine.split("=")[0].trim();
             String object = sCurrentLine.split("=")[1].trim();
             hasht1.put(key, object);
@@ -71,7 +71,7 @@ public class Casas_Main {
             key2 = key2.replace("- ", "");
             object2 = fixer2.accentFix(object2).toLowerCase();
             //System.out.println("added as key:"+key2);
-            System.out.println("FINAL ADDED IN DICTIONARY" + key2);
+            //System.out.println("FINAL ADDED IN DICTIONARY" + key2);
             hasht2.put(key2, object2);
         }
     }
@@ -734,11 +734,11 @@ public class Casas_Main {
                 if (individualHTMLChildren != null) {
                     for (int j = 0; j < individualHTMLChildren.length; j++) {
                         if (individualHTMLChildren[j].startsWith(".")
-                                && !individualHTMLChildren[j].equals("anuncios")
-                                && !individualHTMLChildren[j].contains("administrar.htm")
-                                && !individualHTMLChildren[j].contains("suscripcion")
-                                && !individualHTMLChildren[j].contains("index")
-                                && !individualHTMLChildren[j].contains("publicar")) {
+                                || individualHTMLChildren[j].equals("anuncios")
+                                || individualHTMLChildren[j].contains("administrar.htm")
+                                || individualHTMLChildren[j].contains("suscripcion")
+                                || individualHTMLChildren[j].contains("index")
+                                || individualHTMLChildren[j].contains("publicar")) {
                             continue; //A.K.A. skip this iteration of the above forloop
                         }
 
