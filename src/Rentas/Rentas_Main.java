@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import org.htmlparser.filters.*;
 
 public class Rentas_Main {
-    
+
     public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaData/";
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
@@ -41,7 +41,8 @@ public class Rentas_Main {
     }
 
     // CHANGE THE LOCATION OF THE DICTIONARY
-    public static void createDictionary() throws FileNotFoundException, IOException {
+    public static void createDictionary() throws FileNotFoundException,
+            IOException {
         Rentas_Main fixer2 = new Rentas_Main();
         String fn = onMac + "Rentas_Date_Dictionary.csv";
         //"C:/Documents and Settings/fsimon0/My Documents/CubaData Original/RentasDateDictionary.csv";
@@ -73,16 +74,14 @@ public class Rentas_Main {
         }
     }
 
-        public void makeTheHashTableFile() throws IOException{
+    public void makeTheHashTableFile() throws IOException {
         File theAllTXTFile = new File(onMac + "Rentas-UniqueSpreadsheet.csv");
         FileWriter allFileWriter = new FileWriter(theAllTXTFile);
         allFileWriter.write(headers);
         String completeMinusHeaders = "";
-        
-        System.out.println("asdkajsdk" + forUniqueTable.get("1901")[1]);
-        
+
         Object[] keyArray = forUniqueTable.keySet().toArray();
-        for(Object key : keyArray){
+        for (Object key : keyArray) {
             completeMinusHeaders = completeMinusHeaders + forUniqueTable.get(key)[1];
         }
 
@@ -90,17 +89,17 @@ public class Rentas_Main {
         allFileWriter.close();
     }
 
-    public String getCodeFromURL (String theURL){
+    public String getCodeFromURL(String theURL) {
         String code = "";
         Pattern pattern = Pattern.compile("!(.*?).htm");
         Matcher matcher = pattern.matcher(theURL);
         if (matcher.find()) {
             code = matcher.group(1);
         }
-        code = code.replaceAll( "[^\\d]", "" );
+        code = code.replaceAll("[^\\d]", "");
         return code;
     }
-    
+
     public String myStringExtract(String theURL) {
         // NO PICTURES
         //<editor-fold>
@@ -221,7 +220,7 @@ public class Rentas_Main {
         direc_NP.setFilters(new NodeFilter[]{direcattr_NP1AND});
         direc_NP.setURL(theURL);
         String direcs_NP = direc_NP.getText();
-        System.out.println("This should not be empty:" + direcs_NP);
+        //System.out.println("This should not be empty:" + direcs_NP);
         String munic = "";
         //System.out.println("this should be 1 or 2" + direcs_NP.split("\\r|\\n").length);
         if (direcs_NP.split("\\r|\\n").length == 1) {
@@ -238,7 +237,7 @@ public class Rentas_Main {
 
         String municCode = "0";
         munic = munic.toLowerCase();
-        System.out.println("searching for key: " + munic);
+        //System.out.println("searching for key: " + munic);
         if (hasht2.get(munic) != null) {
             //System.out.println("found a munic code");
             municCode = hasht2.get(munic);
@@ -361,7 +360,8 @@ public class Rentas_Main {
         String[] fArray = new String[]{
             precs_P, D_precs_hour, D_precs_day, D_precs_month, dateFromDict,
             typrents_P, D_types_cuban, D_types_foreign,
-            habss_P, direcs_NP, ubics_P, d_ubics_city, d_ubics_beach, d_ubics_rural,
+            habss_P, direcs_NP, ubics_P, d_ubics_city, d_ubics_beach,
+            d_ubics_rural,
             types_P, d_types_apart, d_types_house, d_types_rooms,
             descrs_P,
             aicon_N, vid_N, agf_N,
@@ -394,34 +394,33 @@ public class Rentas_Main {
 
         return str;
     }
-    
-    public static void makeUniqueHashTable (String code, String date, String allInfo) throws ParseException{
+
+    public static void makeUniqueHashTable(String code, String date, String allInfo)
+            throws ParseException {
         // We need to check if it exists in the table already, and replace if we have a newer date.
         SimpleDateFormat allParse = new SimpleDateFormat("yyyyddMMM");
         SimpleDateFormat allDisplay = new SimpleDateFormat("dd-MM-yyyy");
-        String [] thisCalArr = allDisplay.format(allParse.parse(date)).split("-");
-        int thisMonth = Integer.parseInt(thisCalArr[1]);		    
-	int thisYear = Integer.parseInt(thisCalArr[2]);
-	int thisDay = Integer.parseInt(thisCalArr[0]);
+        String[] thisCalArr = allDisplay.format(allParse.parse(date)).split("-");
+        int thisMonth = Integer.parseInt(thisCalArr[1]);
+        int thisYear = Integer.parseInt(thisCalArr[2]);
+        int thisDay = Integer.parseInt(thisCalArr[0]);
         Calendar newDate = new GregorianCalendar(thisYear, thisMonth, thisDay);
 
-        String [] anArr = {allDisplay.format(allParse.parse(date)), allInfo};
-        if (forUniqueTable.containsKey(code)){
+        String[] anArr = {allDisplay.format(allParse.parse(date)), allInfo};
+        if (forUniqueTable.containsKey(code)) {
             //If the entry exists, make a Calendar out of it
             String[] insideCalArr = forUniqueTable.get(code)[0].split("-");
             int insideMonth = Integer.parseInt(insideCalArr[1]);
             int insideYear = Integer.parseInt(insideCalArr[2]);
             int insideDAy = Integer.parseInt(insideCalArr[0]);
-            if(newDate.after(forUniqueTable.get(code)[0])){
+            if (newDate.after(forUniqueTable.get(code)[0])) {
                 forUniqueTable.remove(code);
                 forUniqueTable.put(code, anArr);
             }
-        }
-        else{
+        } else {
             forUniqueTable.put(code, anArr);
         }
     }
-
 
     public void textCreator() throws IOException, ParseException {
         Rentas_Main rvp1 = new Rentas_Main();
@@ -441,7 +440,9 @@ public class Rentas_Main {
 
         // GET ALL date FOLDERS
         for (int i = 1; i < datefolderChildren.length; i++) {
-            if (!datefolderChildren[i].contains("NCB") && !datefolderChildren[i].contains("NR") && !datefolderChildren[i].endsWith(".csv") && !datefolderChildren[i].startsWith(".")) {
+            if (!datefolderChildren[i].contains("NCB") && !datefolderChildren[i].contains("NR")
+                    && !datefolderChildren[i].endsWith(".csv") && !datefolderChildren[i].startsWith(".")) {
+                
                 date = datefolderChildren[i];
                 // APPLY ALL ALGORITHM TO ALL datefolders
                 String enclosing = onMac + date + "/casas/renta/";
@@ -449,64 +450,45 @@ public class Rentas_Main {
                 File dir = new File(enclosing);
                 System.out.println(enclosing);
                 String[] individualHTMLChildren = dir.list();
-                ////System.out.println("THISTHISTHIS:" + children[1]);
 
                 File theTXTFile = new File(onMac + date + "/" + date + " - Rentas.csv");
                 //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/"+date+"/"+date+" - Rentas.csv");
-                FileWriter aFileWriter = null;
-                try {
-                    aFileWriter = new FileWriter(theTXTFile);
-                } catch (IOException e1) {
-                }
+                FileWriter aFileWriter = new FileWriter(theTXTFile);
+                aFileWriter.write(headers);
 
-                if (aFileWriter != null) {
-                    try {
-                        aFileWriter.write(headers);
-                    } catch (IOException e) {
-                    }
-                }
-                //System.out.println(individualHTMLChildren[0]);
                 if (individualHTMLChildren != null) {
                     for (int j = 0; j < individualHTMLChildren.length; j++) {
-                         if (individualHTMLChildren[j].startsWith(".")
-                                && !individualHTMLChildren[j].equals("anuncios")
-                                && !individualHTMLChildren[j].contains("administrar.htm")
-                                && !individualHTMLChildren[j].contains("suscripcion")
-                                && !individualHTMLChildren[j].contains("index")
-                                && !individualHTMLChildren[j].contains("publicar")) {
+                        if (individualHTMLChildren[j].startsWith(".")
+                                || individualHTMLChildren[j].equals("anuncios")
+                                || individualHTMLChildren[j].contains("administrar.htm")
+                                || individualHTMLChildren[j].contains("suscripcion")
+                                || individualHTMLChildren[j].contains("index")
+                                || individualHTMLChildren[j].contains("publicar")
+                                || !individualHTMLChildren[j].contains("!")) {
                             continue; //A.K.A. skip this iteration of the above forloop
                         }
                         String fn = enclosing + individualHTMLChildren[j];
-                        System.out.println("filename:" + fn + "progress:"
-                                + (float) j / individualHTMLChildren.length + "%"
-                                + "-" + i + "/" + datefolderChildren.length + "%");
+                        System.out.println("filename:" + fn + " progress:"
+                                + "-" + i + "/" + datefolderChildren.length);
 
-                        if (aFileWriter != null) {
-                            try {
-                                path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
-                                towrite = rvp1.myStringExtract(fn) + path + "\n";
-                                ///// MAKE UNIQUE HASHTABLE
-                                String code = getCodeFromURL(fn);
-                                makeUniqueHashTable(code, date, towrite);
-                                /////---------------
-                                aFileWriter.write(towrite);
-                                allstring = allstring + towrite;
-                            } catch (IOException e) {
-                            }
-                        }
+                        path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
+                        towrite = rvp1.myStringExtract(fn) + path + "\n";
+                        
+                        ///// MAKE UNIQUE HASHTABLE
+                        String code = getCodeFromURL(fn);
+                        makeUniqueHashTable(code, date, towrite);
+                        /////---------------
+                        
+                        aFileWriter.write(towrite);
+                        allstring = allstring + towrite;
                     }
                 }
             }
         }
-        //try {aFileWriter.close();} catch (IOException e) {}
         File theAllTXTFile = new File(onMac + "Cubisima Rentas.csv");
-        //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Rentas.csv"
-        FileWriter allFileWriter = null;
-        try {
-            allFileWriter = new FileWriter(theAllTXTFile);
-        } catch (IOException e1) {
-        }
+        FileWriter allFileWriter = new FileWriter(theAllTXTFile);
         allFileWriter.write(headers);
         allFileWriter.write(allstring);
+        allFileWriter.close();
     }
 }
