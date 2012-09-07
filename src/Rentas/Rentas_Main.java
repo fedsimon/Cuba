@@ -7,6 +7,10 @@ import org.htmlparser.beans.FilterBean;
 import org.htmlparser.filters.HasAttributeFilter;
 import java.text.Normalizer;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +25,7 @@ public class Rentas_Main {/*
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
     public static Hashtable<String, String> hasht2 = new Hashtable<String, String>();
+    public static Hashtable<String, String[]> forUniqueTable = new Hashtable<String, String[]>();
     public String headers = "Precio, Price per Hour Dummy, Price per Day Dummy, "
             + "Price per Month Dummy, Date, Type of Rent, For Cubans Dummy, "
             + "For Foreigners Dummy,Rooms, Direction,Location,City Dummy, "
@@ -30,10 +35,12 @@ public class Rentas_Main {/*
             + "View of the Sea, Breakfast, Laundry, Spanish Classes, Dinner, Internet, Dancing Classes, Minibar, Massages, Excursions, "
             + "Picture Dummy, Municipio Code \n ";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
         Rentas_Main cre = new Rentas_Main();
         Rentas_Main.createDictionary();
         cre.textCreator();
+        cre.makeTheHashTableFile();
+        System.out.println("done");
     }
 
     // CHANGE THE LOCATION OF THE DICTIONARY
@@ -69,6 +76,33 @@ public class Rentas_Main {/*
         }
     }
 
+        public void makeTheHashTableFile() throws IOException{
+        File theAllTXTFile = new File(onMac + "Rentas-UniqueSpreadsheet.csv");
+        FileWriter allFileWriter = new FileWriter(theAllTXTFile);
+        allFileWriter.write(headers);
+        String completeMinusHeaders = "";
+        
+        System.out.println("asdkajsdk" + forUniqueTable.get("1901")[1]);
+        
+        Object[] keyArray = forUniqueTable.keySet().toArray();
+        for(Object key : keyArray){
+            completeMinusHeaders = completeMinusHeaders + forUniqueTable.get(key)[1];
+        }
+
+        allFileWriter.write(completeMinusHeaders);
+        allFileWriter.close();
+    }
+
+    public String getCodeFromURL (String theURL){
+        String code = "";
+        Pattern pattern = Pattern.compile("!(.*?).htm");
+        Matcher matcher = pattern.matcher(theURL);
+        if (matcher.find()) {
+            code = matcher.group(1);
+        }
+        return code;
+    }
+    
     public String myStringExtract(String theURL) {
         // NO PICTURES
         //<editor-fold>
@@ -362,8 +396,36 @@ public class Rentas_Main {/*
 
         return str;
     }
+    
+    public static void makeUniqueHashTable (String code, String date, String allInfo) throws ParseException{
+        // We need to check if it exists in the table already, and replace if we have a newer date.
+        SimpleDateFormat allParse = new SimpleDateFormat("yyyyddMMM");
+        SimpleDateFormat allDisplay = new SimpleDateFormat("dd-MM-yyyy");
+        String [] thisCalArr = allDisplay.format(allParse.parse(date)).split("-");
+        int thisMonth = Integer.parseInt(thisCalArr[1]);		    
+	int thisYear = Integer.parseInt(thisCalArr[2]);
+	int thisDay = Integer.parseInt(thisCalArr[0]);
+        Calendar newDate = new GregorianCalendar(thisYear, thisMonth, thisDay);
 
-    public void textCreator() throws IOException {
+        String [] anArr = {allDisplay.format(allParse.parse(date)), allInfo};
+        if (forUniqueTable.containsKey(code)){
+            //If the entry exists, make a Calendar out of it
+            String[] insideCalArr = forUniqueTable.get(code)[0].split("-");
+            int insideMonth = Integer.parseInt(insideCalArr[1]);
+            int insideYear = Integer.parseInt(insideCalArr[2]);
+            int insideDAy = Integer.parseInt(insideCalArr[0]);
+            if(newDate.after(forUniqueTable.get(code)[0])){
+                forUniqueTable.remove(code);
+                forUniqueTable.put(code, anArr);
+            }
+        }
+        else{
+            forUniqueTable.put(code, anArr);
+        }
+    }
+
+
+    public void textCreator() throws IOException, ParseException {
         Rentas_Main rvp1 = new Rentas_Main();
 
         // Declare some variables
@@ -423,6 +485,10 @@ public class Rentas_Main {/*
                             try {
                                 path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
                                 towrite = rvp1.myStringExtract(fn) + path + "\n";
+                                ///// MAKE UNIQUE HASHTABLE
+                                String code = getCodeFromURL(fn);
+                                makeUniqueHashTable(code, date, towrite);
+                                /////---------------
                                 aFileWriter.write(towrite);
                                 allstring = allstring + towrite;
                             } catch (IOException e) {
