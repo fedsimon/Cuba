@@ -26,18 +26,24 @@ public class Collect_All_Codes {
         Collect_All_Codes cre = new Collect_All_Codes();
         File[] files = new File(onMac).listFiles();
         iterator(files);
-        System.out.println(allCodes.size());
+        Object[] ar = allCodes.toArray();
+        for(Object code : ar){
+            System.out.println(code);   
+        }
+        System.out.println("size: " + ar.length);
     }
 
     //LET's get rentas now
     public static void iterator(File[] firstFile) {
         for (File file : firstFile) {
-            System.out.println(file);
             if (file.isDirectory() && !file.getName().equals("permutas") && !file.getName().startsWith(".")
                     && !file.getName().equals("anuncios") && !file.getName().equals("renta")) {
                 iterator(file.listFiles());
             }
-            else if (file.getAbsolutePath().contains("casas") && 
+            else if (file.getAbsolutePath().contains("casas") && !file.getAbsolutePath().endsWith(".csv") &&
+                    !file.getAbsolutePath().contains("index") && !file.getAbsolutePath().contains("suscripcion") &&
+                    !file.getAbsolutePath().contains("renta") && !file.getAbsolutePath().contains("fotos") &&
+                    !file.getAbsolutePath().contains("publicar") && !file.getAbsolutePath().contains("administrar") &&
                     ((file.getAbsolutePath().endsWith(".html") || file.getAbsolutePath().endsWith(".htm")))){
                 extractCode(file);
             }
@@ -47,9 +53,12 @@ public class Collect_All_Codes {
     public static void extractCode(File aFile) {
         Pattern pattern2 = Pattern.compile("!(.*?).htm");
         Matcher matcher2 = pattern2.matcher(aFile.getAbsolutePath());
+        //System.out.println(aFile);
         if (matcher2.find()) {
-            allCodes.add(matcher2.group(1));
-            System.out.println(matcher2.group(1) + aFile.getName());
+            String code = matcher2.group(1);
+            code = code.replaceAll( "[^\\d]", "" ).trim();
+            allCodes.add(code);
+            //System.out.println(matcher2.group(1) +","+ aFile.getName());
         }
     }
 }
