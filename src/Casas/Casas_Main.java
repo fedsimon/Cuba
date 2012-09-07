@@ -14,7 +14,7 @@ import org.htmlparser.filters.*;
 // ADDED SOLD DUMMY AFTER PRICE COLUMN HEADER BEFORE SUSPICIOUS
 public class Casas_Main {
 
-    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaTest/";
+    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaData/";
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
     public static Hashtable<String, String> hasht2 = new Hashtable<String, String>();
@@ -82,14 +82,11 @@ public class Casas_Main {
         FileWriter allFileWriter = new FileWriter(theAllTXTFile);
         allFileWriter.write(headers);
         String completeMinusHeaders = "";
-        
-        System.out.println("asdkajsdk" + forUniqueTable.get("1901")[1]);
-        
+                
         Object[] keyArray = forUniqueTable.keySet().toArray();
         for(Object key : keyArray){
             completeMinusHeaders = completeMinusHeaders + forUniqueTable.get(key)[1];
         }
-
         allFileWriter.write(completeMinusHeaders);
         allFileWriter.close();
     }
@@ -671,6 +668,7 @@ public class Casas_Main {
 
     public static void makeUniqueHashTable (String code, String date, String allInfo) throws ParseException{
         // We need to check if it exists in the table already, and replace if we have a newer date.
+        // by "date" we mean scrapedate
         SimpleDateFormat allParse = new SimpleDateFormat("yyyyddMMM");
         SimpleDateFormat allDisplay = new SimpleDateFormat("dd-MM-yyyy");
         String [] thisCalArr = allDisplay.format(allParse.parse(date)).split("-");
