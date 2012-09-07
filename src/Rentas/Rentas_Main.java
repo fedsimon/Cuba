@@ -16,11 +16,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.htmlparser.filters.*;
 
-public class Rentas_Main {/*
-     * DELETE TYPE OF RENT
-     */
-
-
+public class Rentas_Main {
+    
     public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaData/";
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
@@ -100,6 +97,7 @@ public class Rentas_Main {/*
         if (matcher.find()) {
             code = matcher.group(1);
         }
+        code = code.replaceAll( "[^\\d]", "" );
         return code;
     }
     
@@ -470,11 +468,13 @@ public class Rentas_Main {/*
                 //System.out.println(individualHTMLChildren[0]);
                 if (individualHTMLChildren != null) {
                     for (int j = 0; j < individualHTMLChildren.length; j++) {
-                        if (individualHTMLChildren[j].startsWith(".")) {
-                            continue;
-                        }
-                        if (!individualHTMLChildren[j].contains("htm") || individualHTMLChildren[j].contains("index.html")) {
-                            continue;
+                         if (individualHTMLChildren[j].startsWith(".")
+                                && !individualHTMLChildren[j].equals("anuncios")
+                                && !individualHTMLChildren[j].contains("administrar.htm")
+                                && !individualHTMLChildren[j].contains("suscripcion")
+                                && !individualHTMLChildren[j].contains("index")
+                                && !individualHTMLChildren[j].contains("publicar")) {
+                            continue; //A.K.A. skip this iteration of the above forloop
                         }
                         String fn = enclosing + individualHTMLChildren[j];
                         System.out.println("filename:" + fn + "progress:"
