@@ -1,7 +1,7 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
- */
+ *
 package Test;
 
 import java.io.File;
@@ -17,7 +17,7 @@ import org.apache.commons.collections.*;
 /**
  *
  * @author fsimon
- */
+ *
 public class Compare_Scrapes {
 
     public static void main(String[] args) throws IOException {
@@ -121,4 +121,4 @@ public class Compare_Scrapes {
         bothScrape_Writer.write(fullString);
         bothScrape_Writer.close();
     }
-}
+}*/
