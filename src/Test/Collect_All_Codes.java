@@ -26,16 +26,19 @@ public class Collect_All_Codes {
         Collect_All_Codes cre = new Collect_All_Codes();
         File[] files = new File(onMac).listFiles();
         iterator(files);
+        System.out.println(allCodes.size());
     }
 
+    //LET's get rentas now
     public static void iterator(File[] firstFile) {
         for (File file : firstFile) {
-            //System.out.println(file);
-            if (file.isDirectory() && !file.getName().equals("casas") && !file.getName().startsWith(".")) {
+            System.out.println(file);
+            if (file.isDirectory() && !file.getName().equals("permutas") && !file.getName().startsWith(".")
+                    && !file.getName().equals("anuncios") && !file.getName().equals("renta")) {
                 iterator(file.listFiles());
             }
-            else if (file.getAbsolutePath().contains("anuncios") && 
-                    (file.getAbsolutePath().endsWith(".html") || file.getAbsolutePath().endsWith(".htm"))){
+            else if (file.getAbsolutePath().contains("casas") && 
+                    ((file.getAbsolutePath().endsWith(".html") || file.getAbsolutePath().endsWith(".htm")))){
                 extractCode(file);
             }
         }
@@ -46,7 +49,7 @@ public class Collect_All_Codes {
         Matcher matcher2 = pattern2.matcher(aFile.getAbsolutePath());
         if (matcher2.find()) {
             allCodes.add(matcher2.group(1));
-            System.out.println(matcher2.group(1));
+            System.out.println(matcher2.group(1) + aFile.getName());
         }
     }
 }
