@@ -88,9 +88,10 @@ public class Rentas_Alt_Dater {
         }
         for (String al : renta_repeater_filtered) {
             String code = "";
-            String date = "";
-            Pattern codepat = Pattern.compile("title=\"(.*?)\"");
+            String date = ""; //os_ctl01_CodigoRenta" value="
+            Pattern codepat = Pattern.compile("CodigoRenta\" value=\"(.*?)\" />");
             Matcher matcher = codepat.matcher(al);
+            //System.out.println(al);
             if (matcher.find()) {
                 System.out.println(matcher.group(1));
                 code = matcher.group(1);
