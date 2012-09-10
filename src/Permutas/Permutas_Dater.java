@@ -36,32 +36,25 @@ public class Permutas_Dater {
 
         File theAllTXTFile = new File(onMac + "Permutas_Date_Dictionary.csv");
         FileWriter allFileWriter = null;
-        try {
-            allFileWriter = new FileWriter(theAllTXTFile);
-        } catch (IOException e1) {
-        }
+        allFileWriter = new FileWriter(theAllTXTFile);
         String toWrite = hasht1.toString();
         toWrite = toWrite.replace("{", "");
         toWrite = toWrite.replace("}", "");
-        toWrite = toWrite.replace("lunes,", "lunes");
-        toWrite = toWrite.replace("martes,", "martes");
-        toWrite = toWrite.replace("miércoles,", "miercoles");
-        toWrite = toWrite.replace("jueves,", "jueves");
-        toWrite = toWrite.replace("viernes,", "viernes");
-        toWrite = toWrite.replace("sábado,", "sabado");
-        toWrite = toWrite.replace("domingo,", "domingo");
+        toWrite = toWrite.replace("lunes,", "monday");
+        toWrite = toWrite.replace("martes,", "tuesday");
+        toWrite = toWrite.replace("miércoles,", "wednesday");
+        toWrite = toWrite.replace("jueves,", "thursday");
+        toWrite = toWrite.replace("viernes,", "friday");
+        toWrite = toWrite.replace("sábado,", "saturday");
+        toWrite = toWrite.replace("domingo,", "sunday");
         toWrite = toWrite.replace(",", "\n");
         allFileWriter.write(toWrite);
-        try {
-            allFileWriter.close();
-        } catch (IOException e) {
-        }
+        allFileWriter.close();
 
     }
 
-    public static void codeDateExtractEntireBuscadorhtml(String filename) {
-
-        String fn = filename;
+    public static void codeDateExtractEntireBuscadorhtml(String fn) {
+        System.out.println(fn);
         FilterBean codeFilter = new FilterBean();
         codeFilter.setURL(fn);
         String code = codeFilter.getText();
