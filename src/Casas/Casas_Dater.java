@@ -20,7 +20,7 @@ public class Casas_Dater {
 
     //******
     //On my Mac or on loaner PC
-    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaData/";
+    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaTest/";
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     //******
     //******
@@ -62,22 +62,14 @@ public class Casas_Dater {
     //
     public static void writeTheHashtableToTextFile() throws IOException {
         File theAllTXTFile = new File(onMac + "Casas_Date_Dictionary.csv");
-        FileWriter allFileWriter = null;
-        
-        try {
-            allFileWriter = new FileWriter(theAllTXTFile);
-        } catch (IOException e1) {
-        }
+        FileWriter allFileWriter = new FileWriter(theAllTXTFile);
         
         String toWrite = hasht1.toString();
         toWrite = toWrite.replaceAll("[{ }]", "");
         toWrite = toWrite.replace(",", "\n");
         
         allFileWriter.write(toWrite);
-        try {
-            allFileWriter.close();
-        } catch (IOException e) {
-        }
+        allFileWriter.close();
     }
     //********
 
@@ -103,7 +95,7 @@ public class Casas_Dater {
         pubFilter.setFilters(new NodeFilter[]{pubattr});
         pubFilter.setURL(theURL);
         String rawPubExtract = pubFilter.getText();
-        //System.out.println("small" + rawPubExtract);
+        System.out.println("small" + rawPubExtract);
         //********
 
         //********
@@ -127,7 +119,7 @@ public class Casas_Dater {
             if (line.contains("file:") && !line.contains("index") && !line.contains("administrar")) {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.find()) {
-                    //System.out.println(matcher.group(1));
+                    System.out.println(matcher.group(1));
                     toBeFinalSet.add(Integer.parseInt(matcher.group(1)));
                 }
             }
@@ -138,16 +130,25 @@ public class Casas_Dater {
         //System.out.println("here:" + rawPubExtract);
         String[] finalArrayofDates = rawPubExtract.split("\n");
 
-        //System.out.println(finalArrayofCodes.length + "," + finalArrayofDates.length);
-
-        if (finalArrayofCodes.length == finalArrayofDates.length) {
-            for (int w = 0; w < finalArrayofCodes.length; w++) {
-                //System.out.println(finalArrayofCodes.length + "-" + w + "=" + (finalArrayofCodes.length-w));
-                String key = finalArrayofCodes[finalArrayofCodes.length-w-1].toString();
+        Integer[] finalArrayofCodesCut = null;
+        int wantlength = finalArrayofDates.length;
+        if(finalArrayofCodes.length >= wantlength){
+            finalArrayofCodesCut = new Integer[wantlength];
+            for(int i = 0; i<wantlength; i++){
+                finalArrayofCodesCut[i] = finalArrayofCodes[i]; //This will essentially cut to the req'd length.
+            }
+        }
+        
+        
+        System.out.println(finalArrayofCodesCut.length + "," + finalArrayofDates.length);
+        if (finalArrayofCodesCut.length == finalArrayofDates.length) {
+            for (int w = 0; w < finalArrayofCodesCut.length; w++) {
+                System.out.println(finalArrayofCodesCut.length + "-" + w + "=" + (finalArrayofCodesCut.length-w));
+                String key = finalArrayofCodesCut[finalArrayofCodesCut.length-w-1].toString();
                 String value = finalArrayofDates[w];
                 System.out.println(key + "," + value);
                 hasht1.put(key, value);
-                //System.out.println(finalArrayofCodes[w] + "," +finalArrayofDates[w]);
+                System.out.println(finalArrayofCodesCut[w] + "," +finalArrayofDates[w]);
             }
         }
     }
