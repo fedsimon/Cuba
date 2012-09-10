@@ -30,7 +30,7 @@ public class Rentas_Alt_Dater {
         //System.out.println(hasht1.toString());
     }
 
-    public static void iteratorOverAllFiles(File[] files) throws URISyntaxException, ParserException {
+    public static void iteratorOverAllFiles(File[] files) throws URISyntaxException, ParserException, IOException {
         for (File file : files) {
             if (file.isDirectory() && !file.getName().equals("permutas")
                     && !file.getName().equals("anuncios")) {
