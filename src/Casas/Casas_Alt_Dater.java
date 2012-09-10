@@ -20,7 +20,7 @@ import org.htmlparser.util.ParserException;
 
 public class Casas_Alt_Dater {
 
-    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaTest/";
+    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaData/";
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
 
