@@ -22,17 +22,21 @@ import java.util.logging.Logger;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.text.Normalizer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 import java.util.Hashtable;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import org.htmlparser.filters.OrFilter;
 
 public class Permutas_Main extends Frame {
 
-    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaData/";
+    public static String onMac = "/Users/fsimon/Desktop/ADAIR/CubaTest/";
     public static String onPC = "C:/Documents and Settings/fsimon0/My Documents/CubaData Original/";
     public static Hashtable<String, String> hasht1 = new Hashtable<String, String>();
     public static Hashtable<String, String> hasht2 = new Hashtable<String, String>();
+    public static Hashtable<String, String[]> forUniqueTable = new Hashtable<String, String[]>();
     public static String headers =
             //<editor-fold>
 
@@ -147,16 +151,71 @@ public class Permutas_Main extends Frame {
             + "Side Payments Give Dummy, Side Payments Receive Dummy, Side Payments In Unspecified Direction Dummy  \n";
     //</editor-fold>
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
         createDictionary();
         Permutas_Main rvp = new Permutas_Main();
         rvp.textCreator();
+        rvp.makeTheHashTableFile();
         //String theURL = "file://localhost/Users/federicocsimon/Dropbox/CubaHousing/CubaData/Cubisima/"
         //+"02Dec2011 - CB/permutas/anuncios";        
     }
 //  
 
-    public static void createDictionary() throws FileNotFoundException, IOException {
+    public void makeTheHashTableFile() throws IOException {
+        File theAllTXTFile = new File(onMac + "Permutas-UniqueSpreadsheet.csv");
+        FileWriter allFileWriter = new FileWriter(theAllTXTFile);
+        allFileWriter.write(headers);
+        String completeMinusHeaders = "";
+
+        Object[] keyArray = forUniqueTable.keySet().toArray();
+        for (Object key : keyArray) {
+            completeMinusHeaders = completeMinusHeaders + forUniqueTable.get(key)[1];
+        }
+
+        allFileWriter.write(completeMinusHeaders);
+        allFileWriter.close();
+    }
+
+    public String getCodeFromURL(String theURL) {
+        String code = "";
+        Pattern pattern = Pattern.compile("!(.*?).htm");
+        Matcher matcher = pattern.matcher(theURL);
+        if (matcher.find()) {
+            code = matcher.group(1);
+        }
+        code = code.replaceAll("[^\\d]", "");
+        return code;
+    }
+
+    public static void makeUniqueHashTable(String code, String date, String allInfo)
+            throws ParseException {
+        // We need to check if it exists in the table already, and replace if we have a newer date.
+        SimpleDateFormat allParse = new SimpleDateFormat("yyyyddMMM");
+        SimpleDateFormat allDisplay = new SimpleDateFormat("dd-MM-yyyy");
+        String[] thisCalArr = allDisplay.format(allParse.parse(date)).split("-");
+        int thisMonth = Integer.parseInt(thisCalArr[1]);
+        int thisYear = Integer.parseInt(thisCalArr[2]);
+        int thisDay = Integer.parseInt(thisCalArr[0]);
+        Calendar newDate = new GregorianCalendar(thisYear, thisMonth, thisDay);
+
+        String[] anArr = {allDisplay.format(allParse.parse(date)), allInfo};
+        if (forUniqueTable.containsKey(code)) {
+            //If the entry exists, make a Calendar out of it
+            String[] insideCalArr = forUniqueTable.get(code)[0].split("-");
+            int insideMonth = Integer.parseInt(insideCalArr[1]);
+            int insideYear = Integer.parseInt(insideCalArr[2]);
+            int insideDAy = Integer.parseInt(insideCalArr[0]);
+            if (newDate.after(forUniqueTable.get(code)[0])) {
+                forUniqueTable.remove(code);
+                forUniqueTable.put(code, anArr);
+            }
+        } else {
+            forUniqueTable.put(code, anArr);
+        }
+    }
+
+    public static void createDictionary() throws FileNotFoundException,
+            IOException {
         Permutas_Main fixer2 = new Permutas_Main();
         String fn = onMac + "Permutas_Only_Date_Dictionary.csv";
         //"C:/Documents and Settings/fsimon0/My Documents/CubaData Original/"Permutas_Only_Date_Dictionary.csv"
@@ -1683,21 +1742,28 @@ public class Permutas_Main extends Frame {
             serAg24HH_3, serCarpH_3, derS3, munS3, munCode3, habDummy3,
             dirdS3, quaUTS3, quaBTS3, repairdummy3, cperS_3, fobsS3, " --- ",
             qtypeS, qroomS, qserS, qserSalaComW_1, qserSalaW_1, serComedorW_1,
-            serCocinaW_1, serCocinaComW_1, serAzotLibW_1, serAzotCompW_1, serTelW_1,
-            serBalcW_1, serBarbacW_1, serTerrW_1, serPatW_1, serPortW_1, serJardW_1,
+            serCocinaW_1, serCocinaComW_1, serAzotLibW_1, serAzotCompW_1,
+            serTelW_1,
+            serBalcW_1, serBarbacW_1, serTerrW_1, serPatW_1, serPortW_1,
+            serJardW_1,
             serPiscW_1, serGaraW_1, serPosGaraW_1, serElevW_1, serPuntAltW_1,
             serGasBalW_1, serGasCallW_1, serAg24HW_1, serCarpW_1, qlocS,
             qqualS, qqualQS, qdetS,
             " --- ",
             qtypeS2, qroomS2, qserS2, qserSalaComW_2, qserSalaW_2, serComedorW_2,
-            serCocinaW_2, serCocinaComW_2, serAzotLibW_2, serAzotCompW_2, serTelW_2,
-            serBalcW_2, serBarbacW_2, serTerrW_2, serPatW_2, serPortW_2, serJardW_2,
+            serCocinaW_2, serCocinaComW_2, serAzotLibW_2, serAzotCompW_2,
+            serTelW_2,
+            serBalcW_2, serBarbacW_2, serTerrW_2, serPatW_2, serPortW_2,
+            serJardW_2,
             serPiscW_2, serGaraW_2, serPosGaraW_2, serElevW_2, serPuntAltW_2,
-            serGasBalW_2, serGasCallW_2, serAg24HW_2, serCarpW_2, qlocS2, qqualS2, qqualQS2,
+            serGasBalW_2, serGasCallW_2, serAg24HW_2, serCarpW_2, qlocS2,
+            qqualS2, qqualQS2,
             qdetS2, " --- ",
             qtypeS3, qroomS3, qserS3, qserSalaComW_3, qserSalaW_3, serComedorW_3,
-            serCocinaW_3, serCocinaComW_3, serAzotLibW_3, serAzotCompW_3, serTelW_3,
-            serBalcW_3, serBarbacW_3, serTerrW_3, serPatW_3, serPortW_3, serJardW_3,
+            serCocinaW_3, serCocinaComW_3, serAzotLibW_3, serAzotCompW_3,
+            serTelW_3,
+            serBalcW_3, serBarbacW_3, serTerrW_3, serPatW_3, serPortW_3,
+            serJardW_3,
             serPiscW_3, serGaraW_3, serPosGaraW_3, serElevW_3, serPuntAltW_3,
             serGasBalW_3, serGasCallW_3, serAg24HW_3, serCarpW_3,
             qlocS3, qqualS3, qqualQS3,
@@ -1784,7 +1850,7 @@ public class Permutas_Main extends Frame {
         return a;
     }
 
-    public void textCreator() throws IOException {
+    public void textCreator() throws IOException, ParseException {
         Permutas_Main rvp1 = new Permutas_Main();
 
         // Declare some variables
@@ -1803,8 +1869,6 @@ public class Permutas_Main extends Frame {
 
         // GET ALL date FOLDERS
         for (int i = 0; i < datefolderChildren.length; i++) {
-            if (true) {
-            }
             date = datefolderChildren[i];
             // APPLY ALL ALGORITHM TO ALL datefolders
             String enclosing = onMac + date + "/permutas/anuncios/";
@@ -1812,33 +1876,13 @@ public class Permutas_Main extends Frame {
             System.out.println("enclosing" + enclosing);
             File dir = new File(enclosing);
             String[] individualHTMLChildren = dir.list();
-            /*
-             * //ignore files starting with . int numberOfNonPeriodFiles = 0;
-             * for(int y = 0; y<individualHTMLChildren.length; y++){
-             * if(!individualHTMLChildren[y].startsWith(".")){
-             * numberOfNonPeriodFiles = numberOfNonPeriodFiles +1; } String[]
-             * individualHTMLChildrenWithoutPeriodStart = new
-             * String[numberOfNonPeriodFiles];
-             *
-             * for(int y = 0; y<individualHTMLChildren.length; y++){
-             * if(!individualHTMLChildren[y].startsWith(".")){
-             * individualHTMLChildrenWithoutPeriodStart[] } }
-             */
-            //System.out.println("THISTHISTHIS:" + individualHTMLChildren[1]);
 
             File theTXTFile = new File(onMac + date + "/Cubisima -" + date + " - Permutas.csv");
             //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/"+date+"/Cubisima -"+date+" - Permutas.csv"
-            FileWriter aFileWriter = null;
-            try {
-                aFileWriter = new FileWriter(theTXTFile);
-            } catch (IOException e1) {
-            }
+            FileWriter aFileWriter  = new FileWriter(theTXTFile);
 
             if (aFileWriter != null) {
-                try {
-                    aFileWriter.write(headers);
-                } catch (IOException e) {
-                }
+                aFileWriter.write(headers);
             }
 
             if (individualHTMLChildren != null) {
@@ -1849,32 +1893,28 @@ public class Permutas_Main extends Frame {
                             + "-" + i + "/" + datefolderChildren.length + "%");
 
                     if (aFileWriter != null) {
-                        try {
-                            path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
-                            if (individualHTMLChildren[j].startsWith(".")) {
-                                // System.out.println("I found a period!!!!!");
-                                continue;
-                            }
-                            towrite = rvp1.myStringExtract(fn) + path + "\n";
-                            aFileWriter.write(towrite);
-                            allstring = allstring + towrite;
-                        } catch (IOException e) {
+                        path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
+                        if (individualHTMLChildren[j].startsWith(".")) {
+                            // System.out.println("I found a period!!!!!");
+                            continue;
                         }
+                        towrite = rvp1.myStringExtract(fn) + path + "\n";
+
+                        ///// MAKE UNIQUE HASHTABLE
+                        String code = getCodeFromURL(fn);
+                        makeUniqueHashTable(code, date, towrite);
+                        /////---------------
+
+                        aFileWriter.write(towrite);
+                        allstring = allstring + towrite;
                     }
                 }
-                try {
-                    aFileWriter.close();
-                } catch (IOException e) {
-                }
+                aFileWriter.close();
             }
         }
         File theAllTXTFile = new File(onMac + "/CubisimaCB - AllPermutas.csv");
         //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/CubisimaCB - AllPermutas.csv"
-        FileWriter allFileWriter = null;
-        try {
-            allFileWriter = new FileWriter(theAllTXTFile);
-        } catch (IOException e1) {
-        }
+        FileWriter allFileWriter = new FileWriter(theAllTXTFile);
         allFileWriter.write(headers);
         allFileWriter.write(allstring);
     }
