@@ -1,8 +1,14 @@
 package Permutas;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import org.htmlparser.beans.FilterBean;
 import java.util.Hashtable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Permutas_Dater {
 
@@ -17,21 +23,80 @@ public class Permutas_Dater {
         System.out.println(hasht1.toString());
     }
 
-    public static void iteratorOverAllFiles(File[] files) {
+    public static void iteratorOverAllFiles(File[] files) throws MalformedURLException, IOException {
         for (File file : files) {
-            System.out.println(file);
+            //System.out.println(file);
             if (file.isDirectory() && !file.getName().equals("casas")) {
                 //System.out.println(file.getName());
                 iteratorOverAllFiles(file.listFiles());
             } else {
                 if ((file.getName().equals("buscador.html")) || (file.getName().equals("index.html"))) {
-                    codeDateExtractEntireBuscadorhtml(file.getAbsolutePath());
+                    whichTypeOfExtractor(file.getAbsolutePath());
                     //System.out.println("something sent to codeExtractEntire");
                 }
             }
         }
     }
 
+    public static void whichTypeOfExtractor(String fn) throws MalformedURLException, IOException{
+        URL url = new URL("file:" + fn);
+        URLConnection con = url.openConnection();
+        Pattern p = Pattern.compile("text/html;\\s+charset=([^\\s]+)\\s*");
+        Matcher m = p.matcher(con.getContentType());
+        /*
+         * If Content-Type doesn't match this pre-conception, choose default and
+         * hope for the best.
+         */
+        String charset = m.matches() ? m.group(1) : "ISO-8859-1";
+        Reader r = new InputStreamReader(con.getInputStream(), charset);
+        StringBuilder buf = new StringBuilder();
+        while (true) {
+            int ch = r.read();
+            if (ch < 0) {
+                break;
+            }
+            buf.append((char) ch);
+        }
+        String str = buf.toString();
+        
+        if(str.contains("Resultados de la búsqueda de permutas en cuba.")){
+            System.out.println(fn);
+            newCodeExtractor(fn, str);
+        }
+        else{
+            oldCodeExtractor(fn);
+        }
+        
+    }
+    
+    public static void newCodeExtractor(String fn, String str){
+        System.out.println("called");
+        String[] renta_repeater = str.split("renta_repeater");
+        ArrayList<String> renta_repeater_filtered = new ArrayList();
+        for (String rr : renta_repeater) {
+            if (rr.contains("renta_publicado")) {
+                renta_repeater_filtered.add(rr);
+            }
+        }
+        for (String al : renta_repeater_filtered) {
+            String code = "";
+            String date = "";
+            Pattern codepat = Pattern.compile("title=\"(.*?)\"");
+            Matcher matcher = codepat.matcher(al);
+            if (matcher.find()) {
+                System.out.println(matcher.group(1));
+                code = matcher.group(1);
+            }
+            Pattern datepat = Pattern.compile("\"renta_publicado\">(.*?)</div>");
+            Matcher datematcher = datepat.matcher(al);
+            if (datematcher.find()) {
+                System.out.println(datematcher.group(1));
+                date = datematcher.group(1);
+            }
+            hasht1.put(code, date);
+        }
+    }
+    
     public static void writeTheHashtableToTextFile() throws IOException {
 
         File theAllTXTFile = new File(onMac + "Permutas_Date_Dictionary.csv");
@@ -53,8 +118,8 @@ public class Permutas_Dater {
 
     }
 
-    public static void codeDateExtractEntireBuscadorhtml(String fn) {
-        System.out.println(fn);
+    public static void oldCodeExtractor(String fn) {
+        //System.out.println(fn);
         FilterBean codeFilter = new FilterBean();
         codeFilter.setURL(fn);
         String code = codeFilter.getText();
