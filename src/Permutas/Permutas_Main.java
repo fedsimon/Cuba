@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 import java.util.Hashtable;
 import java.util.Scanner;
 import java.util.regex.Matcher;
-import org.htmlparser.filters.OrFilter;
+import org.htmlparser.filters.*;
 
 public class Permutas_Main extends Frame {
 
@@ -44,7 +44,7 @@ public class Permutas_Main extends Frame {
             ///// FIRST HAVE
             //<editor-fold>
             + "Title (Have)_1, TipoLocal(Have)_1, Rooms (Have),"
-            + "# Rooms _1, # Bathrooms _1, Services(Have),"
+            + "# Rooms _1, # Bathrooms _1, Ser vices(Have),"
             + "Sala-Comedor Dummy_1, Sala Dummy_1, Comedor Dummy_1, "
             + "Cocina Dummy_1, Cocina-Comedor Dummy,"
             + "Azotea Libre Dummy_1, Azotea Compartida Dummy_1, Telefono Dummy,"
@@ -102,15 +102,7 @@ public class Permutas_Main extends Frame {
             //<editor-fold>
             + "Type (Wanted), Rooms (Wanted),"
             + "Services (Wanted), "
-            + "Sala-Comedor Dummy_Wanted_1, Sala Dummy_Wanted_1, Comedor Dummy_Wanted_1, "
-            + "Cocina Dummy_Wanted_1, Cocina-Comedor Dummy,"
-            + "Azotea Libre Dummy_Wanted_1, Azotea Compartida Dummy_Wanted_1, Telefono Dummy,"
-            + "Balcon Dummy_Wanted_1, Barbacoa Dummy_Wanted_1, Terraza Dummy_Wanted_1, "
-            + "Patio Dummy_Wanted_1, Portal Dummy_Wanted_1, Jardin Dummy_Wanted_1, Piscina Dummy,"
-            + "Garaje Dummy_Wanted_1, Posibilidad Garaje Dummy_Wanted_1, Elevador Dummy,"
-            + "Puntal Alto Dummy_Wanted_1, Gas de Balon Dummy_Wanted_1, "
-            + "Gas de la Calle Dummy_Wanted_1, Agua las 24 horas Dummy_Wanted_1, "
-            + "Carposhe Dummy_Wanted_1,"
+            + "Puerta Calle_Dummy (Wanted), Independiente_Dummy (Wanted), Bajos_Dummy (Wanted), Posibilidad de Garaje (Wanted),"
             + "Location (Wanted), Quality of Unit (Wanted), "
             + "Quality of Building (Wanted), Details (Wanted), ||||||||||, "
             //</editor-fold>
@@ -118,15 +110,7 @@ public class Permutas_Main extends Frame {
             /// SECOND WANTED
             //<editor-fold>
             + "Type 2 (Wanted), Rooms 2 (Wanted), Services 2 (Wanted), "
-            + "+ Sala-Comedor Dummy_Wanted_2, Sala Dummy_Wanted_2, Comedor Dummy_Wanted_2, "
-            + "Cocina Dummy_Wanted_2, Cocina-Comedor Dummy,"
-            + "Azotea Libre Dummy_Wanted_2, Azotea Compartida Dummy_Wanted_2, Telefono Dummy,"
-            + "Balcon Dummy_Wanted_2, Barbacoa Dummy_Wanted_2, Terraza Dummy_Wanted_2, "
-            + "Patio Dummy_Wanted_2, Portal Dummy_Wanted_2, Jardin Dummy_Wanted_2, Piscina Dummy,"
-            + "Garaje Dummy_Wanted_2, Posibilidad Garaje Dummy_Wanted_2, Elevador Dummy,"
-            + "Puntal Alto Dummy_Wanted_2, Gas de Balon Dummy_Wanted_2, "
-            + "Gas de la Calle Dummy_Wanted_2, Agua las 24 horas Dummy_Wanted_2, "
-            + "Carposhe Dummy_Wanted_2,"
+            + "Puerta Calle_Dummy2 (Wanted), Independiente_Dummy2 (Wanted), Bajos_Dummy2 (Wanted), Posibilidad de Garaje2 (Wanted),"
             + "Location 2 (Wanted), Quality of Unit 2 (Wanted), "
             + "Quality of Building 2 (Wanted), Details 2 (Wanted), ||||||||||, "
             //</editor-fold>
@@ -134,15 +118,7 @@ public class Permutas_Main extends Frame {
             /// Third WANTED
             //<editor-fold>
             + "Type 3 (Wanted), Rooms 3 (Wanted), Services 3 (Wanted), "
-            + "Sala-Comedor Dummy_Wanted_3, Sala Dummy_Wanted_3, Comedor Dummy_Wanted_3, "
-            + "Cocina Dummy_Wanted_3, Cocina-Comedor Dummy,"
-            + "Azotea Libre Dummy_Wanted_3, Azotea Compartida Dummy_Wanted_3, Telefono Dummy,"
-            + "Balcon Dummy_Wanted_3, Barbacoa Dummy_Wanted_3, Terraza Dummy_Wanted_3, "
-            + "Patio Dummy_Wanted_3, Portal Dummy_Wanted_3, Jardin Dummy_Wanted_3, Piscina Dummy,"
-            + "Garaje Dummy_Wanted_3, Posibilidad Garaje Dummy_Wanted_3, Elevador Dummy,"
-            + "Puntal Alto Dummy_Wanted_3, Gas de Balon Dummy_Wanted_3, "
-            + "Gas de la Calle Dummy_Wanted_3, Agua las 24 horas Dummy_Wanted_3, "
-            + "Carposhe Dummy_Wanted_3,"
+            + "Puerta Calle_Dummy3 (Wanted), Independiente_Dummy3 (Wanted), Bajos_Dummy3 (Wanted), Posibilidad de Garaje3 (Wanted),"
             + "Location 3 (Wanted), Quality of Unit 3 (Wanted), "
             + "Quality of Building 3 (Wanted), Details 3 (Wanted), ||||||||||, "
             //</editor-fold>
@@ -275,14 +251,17 @@ public class Permutas_Main extends Frame {
         FilterBean typeFilter = new FilterBean();
         HasAttributeFilter typeAttribute = new HasAttributeFilter("id", "ctl01_LabelCantidades");
         HasAttributeFilter typeAttribute1 = new HasAttributeFilter("id", "ctl02_LabelCantidades");
-        OrFilter typeAttributeAND = new OrFilter(typeAttribute, typeAttribute1);
+        HasAttributeFilter typeAttribute2 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelTipoPermuta");
+        OrFilter typeAttributeAND = new OrFilter(new NodeFilter[]{typeAttribute, typeAttribute1, typeAttribute2});
         typeFilter.setFilters(new NodeFilter[]{typeAttributeAND});
         typeFilter.setURL(theURL);
         String type = typeFilter.getText();
-        type = type.replace("PERMUTO:", "");
+        type = type.replace("PERMUTO", "");
+        type = type.replace(":", "");
         type = type.replace("viviendas", "");
         type = type.replace("vivienda ", "");
-        type = type.replace("vivienda", "");
+        type = type.replace("VIVIENDA ", "");
+        type = type.replace("VIVIENDAS", "");
         //</editor-fold>
         //</editor-fold>
 
@@ -294,17 +273,21 @@ public class Permutas_Main extends Frame {
         FilterBean locF = new FilterBean();
         HasAttributeFilter locA = new HasAttributeFilter("id", "ctl01_LabelTitulo");
         HasAttributeFilter locA1 = new HasAttributeFilter("id", "ctl02_LabelTitulo");
-        OrFilter locAND = new OrFilter(locA, locA1);
+        HasAttributeFilter locA12 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelAnuncio1");
+        OrFilter locAND = new OrFilter(new NodeFilter[]{locA, locA1, locA12});
         locF.setFilters(new NodeFilter[]{locAND});
         locF.setURL(theURL);
         String hLocS = locF.getText();
         hLocS = fixer.accentFix(hLocS);
         hLocS = hLocS.replace("DIRECCIÓN", "");
+        hLocS = hLocS.replace(":", "");
+        hLocS = hLocS.trim();
 
         FilterBean tipolocF = new FilterBean();
         HasAttributeFilter tiplocA = new HasAttributeFilter("id", "ctl01_LabelTipoLocal");
         HasAttributeFilter tiplocA1 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal");
-        OrFilter tipLocAND = new OrFilter(tiplocA, tiplocA1);
+        HasAttributeFilter tiplocA12 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelTipoLocalOfrezco1");
+        OrFilter tipLocAND = new OrFilter(new NodeFilter[]{tiplocA, tiplocA1, tiplocA12});
         tipolocF.setFilters(new NodeFilter[]{tipLocAND});
         tipolocF.setURL(theURL);
         String htipLocS = tipolocF.getText();
@@ -343,6 +326,31 @@ public class Permutas_Main extends Frame {
             roomHD = habSEditedArr[0];
             bathrHD = habSEditedArr[1];
         }
+        
+        if(roomHD.equals("0") && bathrHD.equals("0")){
+            FilterBean habFAlt = new FilterBean();
+            HasAttributeFilter habAlt = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadCuartosOfrezco1");
+            habFAlt.setFilters(new NodeFilter[]{habAlt});
+            habFAlt.setURL(theURL);
+            String habSALT = habFAlt.getText();
+            habSALT = habSALT.replace("cuartos", "");
+            habSALT = habSALT.replace("cuarto", "");
+            habSALT = habSALT.replace(",", "");
+            
+            FilterBean bathFALT = new FilterBean();
+            HasAttributeFilter bathFALTAt = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadBanosOfrezco1");
+            bathFALT.setFilters(new NodeFilter[]{bathFALTAt});
+            bathFALT.setURL(theURL);
+            String bathSALT = bathFALT.getText();
+            bathSALT = bathSALT.replace("baños", "");
+            bathSALT = bathSALT.replace("baño", "");
+            bathSALT = bathSALT.replace(",", "");
+            
+            roomHD = habSALT;
+            bathrHD = bathSALT;
+            habS = "->";
+        }
+        
         //</editor-fold>
 
         //3.- Servicios
@@ -354,6 +362,21 @@ public class Permutas_Main extends Frame {
         serF.setFilters(new NodeFilter[]{serAND});
         serF.setURL(theURL);
         String serS = serF.getText();
+        
+        if(serS.equals("")){
+            HasAttributeFilter theParentAttr = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_DataListServicios");
+            HasParentFilter theParent = new HasParentFilter(theParentAttr, true);
+            TagNameFilter theTD = new TagNameFilter("td");
+            HasAttributeFilter theIMG = new HasAttributeFilter("src", "http://www.cubisima.com/Images/checked.png");
+            HasChildFilter childOfTD = new HasChildFilter(theIMG);
+            AndFilter both = new AndFilter(new NodeFilter[]{theTD, childOfTD,theParent});
+
+            // Set FilterBean
+            FilterBean fb = new FilterBean();
+            fb.setFilters(new NodeFilter[]{both});
+            fb.setURL(theURL);
+            serS = fb.getText().replaceAll("\n","y");
+        }
 
         //Initialize Strings to "zero"
         String serSalaComH_1 = "0", serSalaH_1 = "0", serComedorH_1 = "0",
@@ -447,7 +470,8 @@ public class Permutas_Main extends Frame {
         FilterBean dirF = new FilterBean();
         HasAttributeFilter dirA = new HasAttributeFilter("id", "ctl01_LabelDireccionLugar");
         HasAttributeFilter dirA1 = new HasAttributeFilter("id", "ctl02_LabelDireccionLugar");
-        OrFilter dirOR = new OrFilter(dirA, dirA1);
+        HasAttributeFilter dirA12 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelDireccion1");
+        OrFilter dirOR = new OrFilter(new NodeFilter[]{dirA, dirA1, dirA12});
         dirF.setFilters(new NodeFilter[]{dirOR});
         dirF.setURL(theURL);
         String derS = dirF.getText();
@@ -463,7 +487,8 @@ public class Permutas_Main extends Frame {
         FilterBean munF = new FilterBean();
         HasAttributeFilter munA = new HasAttributeFilter("id", "ctl01_LabelMunicipio");
         HasAttributeFilter munA1 = new HasAttributeFilter("id", "ctl02_LabelMunicipio");
-        OrFilter munOR = new OrFilter(munA, munA1);
+        HasAttributeFilter munA12 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelProvMunBar");
+        OrFilter munOR = new OrFilter(new NodeFilter[]{munA, munA1, munA12});
         munF.setFilters(new NodeFilter[]{munOR});
         munF.setURL(theURL);
         String munS = munF.getText();
@@ -550,6 +575,21 @@ public class Permutas_Main extends Frame {
         cperF_1.setURL(theURL);
         String cperS_1 = cperF_1.getText();
         cperS_1 = cperS_1.replace("CANTIDAD DE PERSONAS QUE PUEDEN VIVIR CÓMODAMENTE: ", "");
+        
+        if(cperS_1.equals("")){
+            FilterBean cperF_1ALT = new FilterBean();
+            HasAttributeFilter cperA_1ALT = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCategorias1");
+            cperF_1ALT.setFilters(new NodeFilter[]{cperA_1ALT});
+            cperF_1ALT.setURL(theURL);
+            String cperS_1ALT = cperF_1ALT.getText();
+            
+            Pattern pattern = Pattern.compile("donde pueden vivir cómodamente (.*?) personas");
+            Matcher matcher = pattern.matcher(cperS_1ALT);
+            if (matcher.find()) {
+                cperS_1=matcher.group(1);
+            }
+            
+        }
 
 
         //</editor-fold>
@@ -559,7 +599,8 @@ public class Permutas_Main extends Frame {
         FilterBean fobsF = new FilterBean();
         HasAttributeFilter fobsA = new HasAttributeFilter("id", "ctl01_LabelObservaciones");
         HasAttributeFilter fobsA1 = new HasAttributeFilter("id", "ctl02_LabelObservaciones");
-        OrFilter fobs_OR = new OrFilter(fobsA, fobsA1);
+        HasAttributeFilter fobsA12 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelObservaciones1");
+        OrFilter fobs_OR = new OrFilter(new NodeFilter[]{fobsA, fobsA1,fobsA12});
         fobsF.setFilters(new NodeFilter[]{fobs_OR});
         fobsF.setURL(theURL);
         String fobsS = fobsF.getText();
@@ -575,7 +616,8 @@ public class Permutas_Main extends Frame {
         FilterBean locF2 = new FilterBean();
         HasAttributeFilter locA2 = new HasAttributeFilter("id", "ctl01_LabelTitulo2");
         HasAttributeFilter locA21 = new HasAttributeFilter("id", "ctl02_LabelTitulo2");
-        OrFilter locA2OR = new OrFilter(locA2, locA21);
+        HasAttributeFilter locA22 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelAnuncio2");
+        OrFilter locA2OR = new OrFilter(new NodeFilter[]{locA2, locA21, locA22});
         locF2.setFilters(new NodeFilter[]{locA2OR});
         locF2.setURL(theURL);
         String hLocS2 = locF2.getText();
@@ -585,7 +627,8 @@ public class Permutas_Main extends Frame {
         FilterBean tipolocF_2 = new FilterBean();
         HasAttributeFilter tipolocA_2 = new HasAttributeFilter("id", "ctl01_LabelTipoLocal2");
         HasAttributeFilter tipolocA_21 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal2");
-        OrFilter tipolocOR = new OrFilter(tipolocA_2, tipolocA_21);
+        HasAttributeFilter tiplocA22 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelTipoLocalOfrezco2");
+        OrFilter tipolocOR = new OrFilter(new NodeFilter[]{tipolocA_2, tipolocA_21, tiplocA22});
         tipolocF_2.setFilters(new NodeFilter[]{tipolocOR});
         tipolocF_2.setURL(theURL);
         String htipLocS_2 = tipolocF_2.getText();
@@ -624,6 +667,30 @@ public class Permutas_Main extends Frame {
             roomHD2 = habSEditedArr2[0];
             bathrHD2 = habSEditedArr2[1];
         }
+        
+        if(roomHD2.equals("0") && bathrHD2.equals("0")){
+            FilterBean habFAlt2 = new FilterBean();
+            HasAttributeFilter habAlt2 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadCuartosOfrezco2");
+            habFAlt2.setFilters(new NodeFilter[]{habAlt2});
+            habFAlt2.setURL(theURL);
+            String habSALT2 = habFAlt2.getText();
+            habSALT2 = habSALT2.replace("cuartos", "");
+            habSALT2 = habSALT2.replace("cuarto", "");
+            habSALT2 = habSALT2.replace(",", "");
+            
+            FilterBean bathFALT2 = new FilterBean();
+            HasAttributeFilter bathFALTAt = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadBanosOfrezco2");
+            bathFALT2.setFilters(new NodeFilter[]{bathFALTAt});
+            bathFALT2.setURL(theURL);
+            String bathSALT2 = bathFALT2.getText();
+            bathSALT2 = bathSALT2.replace("baños", "");
+            bathSALT2 = bathSALT2.replace("baño", "");
+            bathSALT2 = bathSALT2.replace(",", "");
+            
+            roomHD2 = habSALT2;
+            bathrHD2 = bathSALT2;
+            habS2 = "->";
+        }
         //</editor-fold>
 
         //3.- Servicios
@@ -635,6 +702,21 @@ public class Permutas_Main extends Frame {
         serF_2.setFilters(new NodeFilter[]{serOR});
         serF_2.setURL(theURL);
         String serS_2 = serF_2.getText();
+        if(serS_2.equals("")){
+            
+            HasAttributeFilter theParentAttr2 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_DataListServicios2");
+            HasParentFilter theParent2 = new HasParentFilter(theParentAttr2, true);
+            TagNameFilter theTD2 = new TagNameFilter("td");
+            HasAttributeFilter theIMG2 = new HasAttributeFilter("src", "http://www.cubisima.com/Images/checked.png");
+            HasChildFilter childOfTD2 = new HasChildFilter(theIMG2);
+            AndFilter both2 = new AndFilter(new NodeFilter[]{theTD2, childOfTD2,theParent2});
+
+            // Set FilterBean
+            FilterBean fb2 = new FilterBean();
+            fb2.setFilters(new NodeFilter[]{both2});
+            fb2.setURL(theURL);
+            serS_2 = fb2.getText().replaceAll("\n"," ");
+        }
 
         //Initialize Strings to "zero"
         String serSalaComH_2 = "0", serSalaH_2 = "0", serComedorH_2 = "0",
@@ -727,7 +809,8 @@ public class Permutas_Main extends Frame {
         FilterBean dirF2 = new FilterBean();
         HasAttributeFilter dirA2 = new HasAttributeFilter("id", "ctl01_LabelDireccionLugar2");
         HasAttributeFilter dirA21 = new HasAttributeFilter("id", "ctl02_LabelDireccionLugar2");
-        OrFilter dirAOR = new OrFilter(dirA2, dirA21);
+        HasAttributeFilter dirA22 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelDireccion2");
+        OrFilter dirAOR = new OrFilter(new NodeFilter[]{dirA2, dirA21, dirA22});
         dirF2.setFilters(new NodeFilter[]{dirAOR});
         dirF2.setURL(theURL);
         String derS2 = dirF2.getText();
@@ -742,7 +825,8 @@ public class Permutas_Main extends Frame {
         FilterBean munF2 = new FilterBean();
         HasAttributeFilter munA2 = new HasAttributeFilter("id", "ctl01_LabelMunicipio2");
         HasAttributeFilter munA21 = new HasAttributeFilter("id", "ctl02_LabelMunicipio2");
-        OrFilter munA2OR = new OrFilter(munA2, munA21);
+        HasAttributeFilter munA22 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelProvMunBar2");
+        OrFilter munA2OR = new OrFilter(new NodeFilter[]{munA2, munA21, munA22});
         munF2.setFilters(new NodeFilter[]{munA2OR});
         munF2.setURL(theURL);
         String munS2 = munF2.getText();
@@ -828,6 +912,19 @@ public class Permutas_Main extends Frame {
         String cperS_2 = cperF_2.getText();
         cperS_2 = cperS_2.replace("CANTIDAD DE PERSONAS QUE PUEDEN VIVIR CÓMODAMENTE: ", "");
 
+        if(cperS_2.equals("")){
+            FilterBean cperF_1ALT2 = new FilterBean();
+            HasAttributeFilter cperA_1ALT2 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCategorias2");
+            cperF_1ALT2.setFilters(new NodeFilter[]{cperA_1ALT2});
+            cperF_1ALT2.setURL(theURL);
+            String cperS_1ALT2 = cperF_1ALT2.getText();
+            
+            Pattern pattern = Pattern.compile("donde pueden vivir cómodamente (.*?) personas");
+            Matcher matcher = pattern.matcher(cperS_1ALT2);
+            if (matcher.find()) {
+                cperS_2=matcher.group(1);
+            }            
+        }
 
         //</editor-fold>
 
@@ -836,7 +933,8 @@ public class Permutas_Main extends Frame {
         FilterBean fobsF2 = new FilterBean();
         HasAttributeFilter fobsA2 = new HasAttributeFilter("id", "ctl01_LabelObservaciones2");
         HasAttributeFilter fobsA21 = new HasAttributeFilter("id", "ctl02_LabelObservaciones2");
-        OrFilter fobsA2OR = new OrFilter(fobsA2, fobsA21);
+        HasAttributeFilter fobsA22 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelObservaciones2");
+        OrFilter fobsA2OR = new OrFilter(new NodeFilter[]{fobsA2, fobsA21, fobsA22});
         fobsF2.setFilters(new NodeFilter[]{fobsA2OR});
         fobsF2.setURL(theURL);
         String fobsS2 = fobsF2.getText();
@@ -893,7 +991,8 @@ public class Permutas_Main extends Frame {
         FilterBean locF3 = new FilterBean();
         HasAttributeFilter locA3 = new HasAttributeFilter("id", "ctl01_LabelTitulo3");
         HasAttributeFilter locA31 = new HasAttributeFilter("id", "ctl02_LabelTitulo3");
-        OrFilter locA3OR = new OrFilter(locA3, locA31);
+        HasAttributeFilter locA32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelAnuncio3");
+        OrFilter locA3OR = new OrFilter(new NodeFilter[]{locA3, locA31, locA32});
         locF3.setFilters(new NodeFilter[]{locA3OR});
         locF3.setURL(theURL);
         String hLocS3 = locF3.getText();
@@ -903,7 +1002,8 @@ public class Permutas_Main extends Frame {
         FilterBean tipolocF_3 = new FilterBean();
         HasAttributeFilter tipolocA_3 = new HasAttributeFilter("id", "ctl01_LabelTipoLocal3");
         HasAttributeFilter tipolocA_31 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal3");
-        OrFilter tipolocA_3OR = new OrFilter(tipolocA_3, tipolocA_31);
+        HasAttributeFilter tiplocA_32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelTipoLocalOfrezco3");
+        OrFilter tipolocA_3OR = new OrFilter(new NodeFilter[]{tipolocA_3, tipolocA_31, tiplocA_32});
         tipolocF_3.setFilters(new NodeFilter[]{tipolocA_3OR});
         tipolocF_3.setURL(theURL);
         String htipLocS_3 = tipolocF_3.getText();
@@ -941,6 +1041,30 @@ public class Permutas_Main extends Frame {
             roomHD3 = habSEditedArr3[0];
             bathrHD3 = habSEditedArr3[1];
         }
+                
+        if(roomHD3.equals("0") && bathrHD3.equals("0")){
+            FilterBean habFAlt3 = new FilterBean();
+            HasAttributeFilter habAlt3 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadCuartosOfrezco3");
+            habFAlt3.setFilters(new NodeFilter[]{habAlt3});
+            habFAlt3.setURL(theURL);
+            String habSALT3 = habFAlt3.getText();
+            habSALT3 = habSALT3.replace("cuartos", "");
+            habSALT3 = habSALT3.replace("cuarto", "");
+            habSALT3 = habSALT3.replace(",", "");
+            
+            FilterBean bathFALT3 = new FilterBean();
+            HasAttributeFilter bathFALTAt3 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadBanosOfrezco3");
+            bathFALT3.setFilters(new NodeFilter[]{bathFALTAt3});
+            bathFALT3.setURL(theURL);
+            String bathSALT3 = bathFALT3.getText();
+            bathSALT3 = bathSALT3.replace("baños", "");
+            bathSALT3 = bathSALT3.replace("baño", "");
+            bathSALT3 = bathSALT3.replace(",", "");
+            
+            roomHD3 = habSALT3;
+            bathrHD3 = bathSALT3;
+            habS3 = "->";
+        }
         //</editor-fold>
 
         //3.- Servicios
@@ -952,6 +1076,22 @@ public class Permutas_Main extends Frame {
         serF_3.setFilters(new NodeFilter[]{serA_3OR});
         serF_3.setURL(theURL);
         String serS_3 = serF_3.getText();
+        
+        if(serS_3.equals("")){
+            
+            HasAttributeFilter theParentAttr3 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_DataListServicios3");
+            HasParentFilter theParent3 = new HasParentFilter(theParentAttr3, true);
+            TagNameFilter theTD3 = new TagNameFilter("td");
+            HasAttributeFilter theIMG3 = new HasAttributeFilter("src", "http://www.cubisima.com/Images/checked.png");
+            HasChildFilter childOfTD3 = new HasChildFilter(theIMG3);
+            AndFilter both3 = new AndFilter(new NodeFilter[]{theTD3, childOfTD3,theParent3});
+
+            // Set FilterBean
+            FilterBean fb3 = new FilterBean();
+            fb3.setFilters(new NodeFilter[]{both3});
+            fb3.setURL(theURL);
+            serS_3 = fb3.getText().replaceAll("\n"," ");
+        }
 
         //Initialize Strings to "zero"
         String serSalaComH_3 = "0", serSalaH_3 = "0", serComedorH_3 = "0",
@@ -1044,7 +1184,8 @@ public class Permutas_Main extends Frame {
         FilterBean dirF3 = new FilterBean();
         HasAttributeFilter dirA3 = new HasAttributeFilter("id", "ctl01_LabelDireccionLugar3");
         HasAttributeFilter dirA31 = new HasAttributeFilter("id", "ctl02_LabelDireccionLugar3");
-        OrFilter dirA3OR = new OrFilter(dirA3, dirA31);
+        HasAttributeFilter dirA32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelDireccion3");
+        OrFilter dirA3OR = new OrFilter(new NodeFilter[]{dirA3, dirA31, dirA32});
         dirF3.setFilters(new NodeFilter[]{dirA3OR});
         dirF3.setURL(theURL);
         String derS3 = dirF3.getText();
@@ -1060,7 +1201,8 @@ public class Permutas_Main extends Frame {
         FilterBean munF3 = new FilterBean();
         HasAttributeFilter munA3 = new HasAttributeFilter("id", "ctl01_LabelMunicipio3");
         HasAttributeFilter munA31 = new HasAttributeFilter("id", "ctl02_LabelMunicipio3");
-        OrFilter munA3OR = new OrFilter(munA3, munA31);
+        HasAttributeFilter munA32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelProvMunBar3");
+        OrFilter munA3OR = new OrFilter(new NodeFilter[]{munA3, munA31, munA32});
         munF3.setFilters(new NodeFilter[]{munA3OR});
         munF3.setURL(theURL);
         String munS3 = munF3.getText();
@@ -1148,7 +1290,20 @@ public class Permutas_Main extends Frame {
         cperF_3.setURL(theURL);
         String cperS_3 = cperF_3.getText();
         cperS_3 = cperS_3.replace("CANTIDAD DE PERSONAS QUE PUEDEN VIVIR CÓMODAMENTE: ", "");
-
+        
+        if(cperS_3.equals("")){
+            FilterBean cperF_1ALT3 = new FilterBean();
+            HasAttributeFilter cperA_1ALT3 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCategorias3");
+            cperF_1ALT3.setFilters(new NodeFilter[]{cperA_1ALT3});
+            cperF_1ALT3.setURL(theURL);
+            String cperS_1ALT3 = cperF_1ALT3.getText();
+            
+            Pattern pattern = Pattern.compile("donde pueden vivir cómodamente (.*?) personas");
+            Matcher matcher = pattern.matcher(cperS_1ALT3);
+            if (matcher.find()) {
+                cperS_3=matcher.group(1);
+            }
+        }
 
         //</editor-fold>
         //9.- Further Observations
@@ -1156,7 +1311,8 @@ public class Permutas_Main extends Frame {
         FilterBean fobsF3 = new FilterBean();
         HasAttributeFilter fobsA3 = new HasAttributeFilter("id", "ctl01_LabelObservaciones3");
         HasAttributeFilter fobsA31 = new HasAttributeFilter("id", "ctl02_LabelObservaciones3");
-        OrFilter fobsA3OR = new OrFilter(fobsA3, fobsA3);
+        HasAttributeFilter fobsA32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelObservaciones3");
+        OrFilter fobsA3OR = new OrFilter(new NodeFilter[]{fobsA3, fobsA31, fobsA32});
         fobsF3.setFilters(new NodeFilter[]{fobsA3OR});
         fobsF3.setURL(theURL);
         String fobsS3 = fobsF3.getText();
@@ -1205,7 +1361,9 @@ public class Permutas_Main extends Frame {
         }
         //</editor-fold>
         //</editor-fold>
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
         //QUIERO
         //<editor-fold>
         //1.- Type
@@ -1213,10 +1371,12 @@ public class Permutas_Main extends Frame {
         FilterBean qtypeF = new FilterBean();
         HasAttributeFilter qtypeA = new HasAttributeFilter("id", "ctl01_LabelTipoLocal4");
         HasAttributeFilter qtypeA1 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal4");
-        OrFilter qtypeAOR = new OrFilter(qtypeA, qtypeA1);
+        HasAttributeFilter qtypeA12 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelTipoLocalNecesito1");
+        OrFilter qtypeAOR = new OrFilter(new NodeFilter[]{qtypeA, qtypeA1, qtypeA12});
         qtypeF.setFilters(new NodeFilter[]{qtypeAOR});
         qtypeF.setURL(theURL);
         String qtypeS = qtypeF.getText();
+        qtypeS = qtypeS.substring(0, qtypeS.length()-1).replaceAll(","," or ");
         //</editor-fold>
 
         //2.- Rooms
@@ -1225,11 +1385,23 @@ public class Permutas_Main extends Frame {
         FilterBean qroomF = new FilterBean();
         HasAttributeFilter qroomA = new HasAttributeFilter("id", "ctl01_LabelHabitaciones4");
         HasAttributeFilter qroomA1 = new HasAttributeFilter("id", "ctl02_LabelHabitaciones4");
-        OrFilter qroomAOR = new OrFilter(qroomA, qroomA1);
+        HasAttributeFilter qroomA12 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadCuartosNecesito1");
+        OrFilter qroomAOR = new OrFilter(new NodeFilter[]{qroomA, qroomA1, qroomA12});
         qroomF.setFilters(new NodeFilter[]{qroomAOR});
         qroomF.setURL(theURL);
-        String qroomS = qroomF.getText();
+        String qroomS = qroomF.getText().replaceAll(",","-");
         qroomS = accentFix(qroomS);
+        
+        
+        FilterBean qbroomF = new FilterBean();
+        HasAttributeFilter qbroomA12 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadBanosNecesito1");
+        OrFilter qbroomAOR = new OrFilter(new NodeFilter[]{qbroomA12});
+        qbroomF.setFilters(new NodeFilter[]{qbroomAOR});
+        qbroomF.setURL(theURL);
+        String qbroomS = qbroomF.getText().replaceAll(",","-");
+        if(!qbroomS.equals("")){
+            qroomS += qbroomS;
+        }
         //</editor-fold>
 
 
@@ -1238,91 +1410,29 @@ public class Permutas_Main extends Frame {
         FilterBean qserF = new FilterBean();
         HasAttributeFilter qserA = new HasAttributeFilter("id", "ctl01_LabelServicios4");
         HasAttributeFilter qserA1 = new HasAttributeFilter("id", "ctl02_LabelServicios4");
-        OrFilter qserAOR = new OrFilter(qserA, qserA1);
+        HasAttributeFilter qserA12 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCaracteristicasNecesito1");
+        OrFilter qserAOR = new OrFilter(new NodeFilter[]{qserA, qserA1, qserA12});
         qserF.setFilters(new NodeFilter[]{qserAOR});
         qserF.setURL(theURL);
         String qserS = qserF.getText();
-        String qserSalaComW_1 = "0", qserSalaW_1 = "0", serComedorW_1 = "0",
-                serCocinaW_1 = "0", serCocinaComW_1 = "0", serAzotLibW_1 = "0",
-                serAzotCompW_1 = "0", serTelW_1 = "0", serBalcW_1 = "0",
-                serBarbacW_1 = "0", serTerrW_1 = "0", serPatW_1 = "0",
-                serPortW_1 = "0", serJardW_1 = "0", serPiscW_1 = "0",
-                serGaraW_1 = "0", serPosGaraW_1 = "0", serElevW_1 = "0",
-                serPuntAltW_1 = "0", serGasBalW_1 = "0", serGasCallW_1 = "0",
-                serAg24HW_1 = "0", serCarpW_1 = "0";
+        if(qserS==null){qserS="";}
+        
+        String qserS11="0", qserS12="0", qserS13="0", qserS14 ="0";
+        
+        if(qserS.contains("puerta calle")){
+            qserS11 ="1";
+        }
+        if(qserS.contains("independiente")){
+            qserS12 ="1";
+        }
+        if(qserS.contains("bajos")){
+            qserS13 ="1";
+        }
+        if(qserS.contains("posibilidad de garaje")){
+            qserS14 ="1";
+        }
+        
 
-        // Check for existence of substrings
-        // THERE ARE MORE, LIKE TELEFONO and sala-comedor
-        //<editor-fold>
-        if (qserS.contains("sala-comedor")) {
-            qserSalaComW_1 = "1";
-        }
-        if (qserS.contains("sala ")) {
-            qserSalaW_1 = "1";
-        }
-        if (qserS.contains(" comedor")) {
-            serComedorW_1 = "1";
-        }
-        if (qserS.contains("cocina")) {
-            serCocinaW_1 = "1";
-        }
-        if (qserS.contains("cocina-comedor")) {
-            serCocinaComW_1 = "1";
-        }
-        if (qserS.contains("azotea libre")) {
-            serAzotLibW_1 = "1";
-        }
-        if (qserS.contains("azotea compartida")) {
-            serAzotCompW_1 = "1";
-        }
-        if (qserS.contains("teléfono")) {
-            serTelW_1 = "1";
-        }
-        if (qserS.contains("balcón")) {
-            serBalcW_1 = "1";
-        }
-        if (qserS.contains("barbacoa")) {
-            serBarbacW_1 = "1";
-        }
-        if (qserS.contains("terraza")) {
-            serTerrW_1 = "1";
-        }
-        if (qserS.contains("patio")) {
-            serPatW_1 = "1";
-        }
-        if (qserS.contains("portal")) {
-            serPortW_1 = "1";
-        }
-        if (qserS.contains("jardín")) {
-            serJardW_1 = "1";
-        }
-        if (qserS.contains("piscina")) {
-            serPiscW_1 = "1";
-        }
-        if (qserS.contains("garaje")) {
-            serGaraW_1 = "1";
-        }
-        if (qserS.contains("posibilidad de garaje")) {
-            serPosGaraW_1 = "1";
-        }
-        if (qserS.contains("elevador")) {
-            serElevW_1 = "1";
-        }
-        if (qserS.contains("puntal alto")) {
-            serPuntAltW_1 = "1";
-        }
-        if (qserS.contains("gas de balón")) {
-            serGasBalW_1 = "1";
-        }
-        if (qserS.contains("gas de la calle")) {
-            serGasCallW_1 = "1";
-        }
-        if (qserS.contains("agua las 24 horas")) {
-            serAg24HW_1 = "1";
-        }
-        if (qserS.contains("carposhe")) {
-            serCarpW_1 = "1";
-        }
         //</editor-fold>
 
         //4.- Location
@@ -1330,14 +1440,15 @@ public class Permutas_Main extends Frame {
         FilterBean qlocF = new FilterBean();
         HasAttributeFilter qlocA = new HasAttributeFilter("id", "ctl01_LabelProvinciasMunicipios4");
         HasAttributeFilter qlocA1 = new HasAttributeFilter("id", "ctl02_LabelProvinciasMunicipios4");
-        OrFilter qlocAOR = new OrFilter(qlocA, qlocA1);
+        HasAttributeFilter qlocA2 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelProvinciaMunicipios");
+        OrFilter qlocAOR = new OrFilter(new NodeFilter[]{qlocA, qlocA1, qlocA2});
         qlocF.setFilters(new NodeFilter[]{qlocAOR});
         qlocF.setURL(theURL);
         String qlocS = qlocF.getText();
         qlocS = qlocS.replace("UBICADA EN: ", "");
         //</editor-fold>
 
-        //5.- Quality (TENGO)
+        //5.- Quality
         //<editor-fold>
         FilterBean qqualF = new FilterBean();
         HasAttributeFilter qqualA = new HasAttributeFilter("id", "ctl01_LabelEstadoVivienda4");
@@ -1372,7 +1483,8 @@ public class Permutas_Main extends Frame {
         FilterBean qdetF = new FilterBean();
         HasAttributeFilter qdetA = new HasAttributeFilter("id", "ctl01_LabelDetalles4");
         HasAttributeFilter qdetA1 = new HasAttributeFilter("id", "ctl02_LabelDetalles4");
-        OrFilter qdetAOR = new OrFilter(qdetA, qdetA1);
+        HasAttributeFilter qdetA2 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelOtrosDetallesNecesito1");
+        OrFilter qdetAOR = new OrFilter(new NodeFilter[]{qdetA, qdetA1,qdetA2});
         qdetF.setFilters(new NodeFilter[]{qdetAOR});
         qdetF.setURL(theURL);
         String qdetS = qdetF.getText();
@@ -1386,7 +1498,8 @@ public class Permutas_Main extends Frame {
         FilterBean qtypeF2 = new FilterBean();
         HasAttributeFilter qtypeA2 = new HasAttributeFilter("id", "ctl01_LabelTipoLocal5");
         HasAttributeFilter qtypeA21 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal5");
-        OrFilter qtypeA2OR = new OrFilter(qtypeA2, qtypeA21);
+        HasAttributeFilter qtypeA22 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelTipoLocalNecesito2");
+        OrFilter qtypeA2OR = new OrFilter(new NodeFilter[]{qtypeA2, qtypeA21, qtypeA22});
         qtypeF2.setFilters(new NodeFilter[]{qtypeA2OR});
         qtypeF2.setURL(theURL);
         String qtypeS2 = qtypeF2.getText();
@@ -1397,11 +1510,22 @@ public class Permutas_Main extends Frame {
         FilterBean qroomF2 = new FilterBean();
         HasAttributeFilter qroomA2 = new HasAttributeFilter("id", "ctl01_LabelHabitaciones5");
         HasAttributeFilter qroomA21 = new HasAttributeFilter("id", "ctl02_LabelHabitaciones5");
-        OrFilter qroomA2OR = new OrFilter(qroomA2, qroomA21);
+        HasAttributeFilter qroomA22 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadCuartosNecesito2");
+        OrFilter qroomA2OR = new OrFilter(new NodeFilter[]{qroomA2, qroomA21, qroomA22});
         qroomF2.setFilters(new NodeFilter[]{qroomA2OR});
         qroomF2.setURL(theURL);
         String qroomS2 = qroomF2.getText();
         qroomS2 = accentFix(qroomS2);
+        
+        FilterBean qbroomF2 = new FilterBean();
+        HasAttributeFilter qbroomA22 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadBanosNecesito2");
+        OrFilter qbroomAOR2 = new OrFilter(new NodeFilter[]{qbroomA22});
+        qbroomF2.setFilters(new NodeFilter[]{qbroomAOR2});
+        qbroomF2.setURL(theURL);
+        String qbroomS2 = qbroomF2.getText().replaceAll(",","-");
+        if(!qbroomS2.equals("")){
+            qroomS2 += qbroomS2;
+        }
         //</editor-fold>
 
         //3.- Services
@@ -1409,106 +1533,42 @@ public class Permutas_Main extends Frame {
         FilterBean qserF2 = new FilterBean();
         HasAttributeFilter qserA2 = new HasAttributeFilter("id", "ctl01_LabelServicios5");
         HasAttributeFilter qserA21 = new HasAttributeFilter("id", "ctl02_LabelServicios5");
-        OrFilter qserA2OR = new OrFilter(qserA2, qserA21);
+        HasAttributeFilter qserA22 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCaracteristicasNecesito2");
+        OrFilter qserA2OR = new OrFilter(new NodeFilter[]{qserA2, qserA21, qserA22});
         qserF2.setFilters(new NodeFilter[]{qserA2OR});
         qserF2.setURL(theURL);
         String qserS2 = qserF2.getText();
-        String qserSalaComW_2 = "0", qserSalaW_2 = "0", serComedorW_2 = "0",
-                serCocinaW_2 = "0", serCocinaComW_2 = "0", serAzotLibW_2 = "0",
-                serAzotCompW_2 = "0", serTelW_2 = "0", serBalcW_2 = "0",
-                serBarbacW_2 = "0", serTerrW_2 = "0", serPatW_2 = "0",
-                serPortW_2 = "0", serJardW_2 = "0", serPiscW_2 = "0",
-                serGaraW_2 = "0", serPosGaraW_2 = "0", serElevW_2 = "0",
-                serPuntAltW_2 = "0", serGasBalW_2 = "0", serGasCallW_2 = "0",
-                serAg24HW_2 = "0", serCarpW_2 = "0";
-
-        // Check for existence of substrings
-        // THERE ARE MORE, LIKE TELEFONO and sala-comedor
-        //<editor-fold>
-        if (qserS2.contains("sala-comedor")) {
-            qserSalaComW_2 = "1";
+        if(qserS2==null){qserS2="";}
+        
+        String qserS21="0", qserS22="0", qserS23="0", qserS24 ="0";
+        if(qserS2.contains("puerta calle")){
+            qserS21 ="1";
         }
-        if (qserS2.contains("sala ")) {
-            qserSalaW_2 = "1";
+        if(qserS2.contains("independiente")){
+            qserS22 ="1";
         }
-        if (qserS2.contains(" comedor")) {
-            serComedorW_2 = "1";
+        if(qserS2.contains("bajos")){
+            qserS23 ="1";
         }
-        if (qserS2.contains("cocina")) {
-            serCocinaW_2 = "1";
-        }
-        if (qserS2.contains("cocina-comedor")) {
-            serCocinaComW_2 = "1";
-        }
-        if (qserS2.contains("azotea libre")) {
-            serAzotLibW_2 = "1";
-        }
-        if (qserS2.contains("azotea compartida")) {
-            serAzotCompW_2 = "1";
-        }
-        if (qserS2.contains("teléfono")) {
-            serTelW_2 = "1";
-        }
-        if (qserS2.contains("balcón")) {
-            serBalcW_2 = "1";
-        }
-        if (qserS2.contains("barbacoa")) {
-            serBarbacW_2 = "1";
-        }
-        if (qserS2.contains("terraza")) {
-            serTerrW_2 = "1";
-        }
-        if (qserS2.contains("patio")) {
-            serPatW_2 = "1";
-        }
-        if (qserS2.contains("portal")) {
-            serPortW_2 = "1";
-        }
-        if (qserS2.contains("jardín")) {
-            serJardW_2 = "1";
-        }
-        if (qserS2.contains("piscina")) {
-            serPiscW_2 = "1";
-        }
-        if (qserS2.contains("garaje")) {
-            serGaraW_2 = "1";
-        }
-        if (qserS2.contains("posibilidad de garaje")) {
-            serPosGaraW_2 = "1";
-        }
-        if (qserS2.contains("elevador")) {
-            serElevW_2 = "1";
-        }
-        if (qserS2.contains("puntal alto")) {
-            serPuntAltW_2 = "1";
-        }
-        if (qserS2.contains("gas de balón")) {
-            serGasBalW_2 = "1";
-        }
-        if (qserS2.contains("gas de la calle")) {
-            serGasCallW_2 = "1";
-        }
-        if (qserS2.contains("agua las 24 horas")) {
-            serAg24HW_2 = "1";
-        }
-        if (qserS2.contains("carposhe")) {
-            serCarpW_2 = "1";
+        if(qserS2.contains("posibilidad de garaje")){
+            qserS24 ="1";
         }
         //</editor-fold>
 
         //4.- Location
         //<editor-fold>
         FilterBean qlocF2 = new FilterBean();
-        HasAttributeFilter qlocA2 = new HasAttributeFilter("id", "ctl01_LabelProvinciasMunicipios5");
-        HasAttributeFilter qlocA21 = new HasAttributeFilter("id", "ctl02_LabelProvinciasMunicipios5");
-        OrFilter qlocA2OR = new OrFilter(qlocA2, qlocA21);
-        qlocF2.setFilters(new NodeFilter[]{qlocA2OR});
+        HasAttributeFilter qlocA22 = new HasAttributeFilter("id", "ctl01_LabelProvinciasMunicipios5");
+        HasAttributeFilter qlocA221 = new HasAttributeFilter("id", "ctl02_LabelProvinciasMunicipios5");
+        HasAttributeFilter qlocA222 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelProvinciaMunicipios2");
+        OrFilter qlocA22OR = new OrFilter(new NodeFilter[]{qlocA22, qlocA221, qlocA222});
+        qlocF2.setFilters(new NodeFilter[]{qlocA22OR});
         qlocF2.setURL(theURL);
         String qlocS2 = qlocF2.getText();
         qlocS2 = qlocS2.replace("UBICADA EN: ", "");
         //</editor-fold>
 
-        //5.- Quality (TENGO)
+        //5.- Quality
         //<editor-fold>
         FilterBean qqualF2 = new FilterBean();
         HasAttributeFilter qqualA2 = new HasAttributeFilter("id", "ctl01_LabelEstadoVivienda5");
@@ -1521,7 +1581,7 @@ public class Permutas_Main extends Frame {
 
         //</editor-fold>
 
-        //6.- Quality (QUIERO)
+        //6.- Quality
         //<editor-fold>
         FilterBean qqualQF2 = new FilterBean();
         HasAttributeFilter qqualQA2 = new HasAttributeFilter("id", "ctl01_LabelEstadoEdificio5");
@@ -1537,9 +1597,10 @@ public class Permutas_Main extends Frame {
         //7.- Detalles
         //<editor-fold>
         FilterBean qdetF2 = new FilterBean();
-        HasAttributeFilter qdetA2 = new HasAttributeFilter("id", "ctl01_LabelDetalles5");
-        HasAttributeFilter qdetA21 = new HasAttributeFilter("id", "ctl02_LabelDetalles5");
-        OrFilter qdetA2OR = new OrFilter(qdetA2, qdetA21);
+        HasAttributeFilter qdetA22 = new HasAttributeFilter("id", "ctl01_LabelDetalles5");
+        HasAttributeFilter qdetA221 = new HasAttributeFilter("id", "ctl02_LabelDetalles5");
+        HasAttributeFilter qdetA222 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelOtrosDetallesNecesito2");
+        OrFilter qdetA2OR = new OrFilter(new NodeFilter[]{qdetA22, qdetA221,qdetA222});
         qdetF2.setFilters(new NodeFilter[]{qdetA2OR});
         qdetF2.setURL(theURL);
         String qdetS2 = qdetF2.getText();
@@ -1564,7 +1625,8 @@ public class Permutas_Main extends Frame {
         FilterBean qtypeF3 = new FilterBean();
         HasAttributeFilter qtypeA3 = new HasAttributeFilter("id", "ctl01_LabelTipoLocal6");
         HasAttributeFilter qtypeA31 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal6");
-        OrFilter qtypeA3OR = new OrFilter(qtypeA3, qtypeA31);
+        HasAttributeFilter qtypeA32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelTipoLocalNecesito3");
+        OrFilter qtypeA3OR = new OrFilter(new NodeFilter[]{qtypeA3, qtypeA31, qtypeA32});
         qtypeF3.setFilters(new NodeFilter[]{qtypeA3OR});
         qtypeF3.setURL(theURL);
         String qtypeS3 = qtypeF3.getText();
@@ -1575,11 +1637,22 @@ public class Permutas_Main extends Frame {
         FilterBean qroomF3 = new FilterBean();
         HasAttributeFilter qroomA3 = new HasAttributeFilter("id", "ctl01_LabelHabitaciones6");
         HasAttributeFilter qroomA31 = new HasAttributeFilter("id", "ctl02_LabelHabitaciones6");
-        OrFilter qroomA3OR = new OrFilter(qroomA3, qroomA31);
+        HasAttributeFilter qroomA32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadCuartosNecesito3");
+        OrFilter qroomA3OR = new OrFilter(new NodeFilter[]{qroomA3, qroomA31, qroomA32});
         qroomF3.setFilters(new NodeFilter[]{qroomA3OR});
         qroomF3.setURL(theURL);
         String qroomS3 = qroomF3.getText();
         qroomS3 = accentFix(qroomS3);
+        
+        FilterBean qbroomF3 = new FilterBean();
+        HasAttributeFilter qbroomA33 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCantidadBanosNecesito3");
+        OrFilter qbroomAOR3 = new OrFilter(new NodeFilter[]{qbroomA33});
+        qbroomF3.setFilters(new NodeFilter[]{qbroomAOR3});
+        qbroomF3.setURL(theURL);
+        String qbroomS3 = qbroomF3.getText().replaceAll(",","-");
+        if(!qbroomS3.equals("")){
+            qroomS3 += qbroomS3;
+        }
         //</editor-fold>
 
         //3.- Services
@@ -1587,106 +1660,43 @@ public class Permutas_Main extends Frame {
         FilterBean qserF3 = new FilterBean();
         HasAttributeFilter qserA3 = new HasAttributeFilter("id", "ctl01_LabelServicios6");
         HasAttributeFilter qserA31 = new HasAttributeFilter("id", "ctl02_LabelServicios6");
-        OrFilter qserA3OR = new OrFilter(qserA3, qserA31);
+        HasAttributeFilter qserA32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelCaracteristicasNecesito3");
+        OrFilter qserA3OR = new OrFilter(new NodeFilter[]{qserA3, qserA31, qserA32});
         qserF3.setFilters(new NodeFilter[]{qserA3OR});
         qserF3.setURL(theURL);
         String qserS3 = qserF2.getText();
-        String qserSalaComW_3 = "0", qserSalaW_3 = "0", serComedorW_3 = "0",
-                serCocinaW_3 = "0", serCocinaComW_3 = "0", serAzotLibW_3 = "0",
-                serAzotCompW_3 = "0", serTelW_3 = "0", serBalcW_3 = "0",
-                serBarbacW_3 = "0", serTerrW_3 = "0", serPatW_3 = "0",
-                serPortW_3 = "0", serJardW_3 = "0", serPiscW_3 = "0",
-                serGaraW_3 = "0", serPosGaraW_3 = "0", serElevW_3 = "0",
-                serPuntAltW_3 = "0", serGasBalW_3 = "0", serGasCallW_3 = "0",
-                serAg24HW_3 = "0", serCarpW_3 = "0";
-
-        // Check for existence of substrings
-        // THERE ARE MORE, LIKE TELEFONO and sala-comedor
-        //<editor-fold>
-        if (qserS3.contains("sala-comedor")) {
-            qserSalaComW_3 = "1";
+        if(qserS3==null){qserS3="";}
+        
+        String qserS31="0", qserS32="0", qserS33="0", qserS34 ="0";
+        if(qserS3.contains("puerta calle")){
+            qserS31 ="1";
         }
-        if (qserS3.contains("sala ")) {
-            qserSalaW_3 = "1";
+        if(qserS3.contains("independiente")){
+            qserS32 ="1";
         }
-        if (qserS3.contains(" comedor")) {
-            serComedorW_3 = "1";
+        if(qserS3.contains("bajos")){
+            qserS33 ="1";
         }
-        if (qserS3.contains("cocina")) {
-            serCocinaW_3 = "1";
+        if(qserS3.contains("posibilidad de garaje")){
+            qserS34 ="1";
         }
-        if (qserS3.contains("cocina-comedor")) {
-            serCocinaComW_3 = "1";
-        }
-        if (qserS3.contains("azotea libre")) {
-            serAzotLibW_3 = "1";
-        }
-        if (qserS3.contains("azotea compartida")) {
-            serAzotCompW_3 = "1";
-        }
-        if (qserS3.contains("teléfono")) {
-            serTelW_3 = "1";
-        }
-        if (qserS3.contains("balcón")) {
-            serBalcW_3 = "1";
-        }
-        if (qserS3.contains("barbacoa")) {
-            serBarbacW_3 = "1";
-        }
-        if (qserS3.contains("terraza")) {
-            serTerrW_3 = "1";
-        }
-        if (qserS3.contains("patio")) {
-            serPatW_3 = "1";
-        }
-        if (qserS3.contains("portal")) {
-            serPortW_3 = "1";
-        }
-        if (qserS3.contains("jardín")) {
-            serJardW_3 = "1";
-        }
-        if (qserS3.contains("piscina")) {
-            serPiscW_3 = "1";
-        }
-        if (qserS3.contains("garaje")) {
-            serGaraW_3 = "1";
-        }
-        if (qserS3.contains("posibilidad de garaje")) {
-            serPosGaraW_3 = "1";
-        }
-        if (qserS3.contains("elevador")) {
-            serElevW_3 = "1";
-        }
-        if (qserS3.contains("puntal alto")) {
-            serPuntAltW_3 = "1";
-        }
-        if (qserS3.contains("gas de balón")) {
-            serGasBalW_3 = "1";
-        }
-        if (qserS3.contains("gas de la calle")) {
-            serGasCallW_3 = "1";
-        }
-        if (qserS3.contains("agua las 24 horas")) {
-            serAg24HW_3 = "1";
-        }
-        if (qserS3.contains("carposhe")) {
-            serCarpW_3 = "1";
-        }
-        //</editor-fold>
-
+        
+        
+        
         //4.- Location
         //<editor-fold>
         FilterBean qlocF3 = new FilterBean();
         HasAttributeFilter qlocA3 = new HasAttributeFilter("id", "ctl01_LabelProvinciasMunicipios6");
         HasAttributeFilter qlocA31 = new HasAttributeFilter("id", "ctl02_LabelProvinciasMunicipios6");
-        OrFilter qlocA3OR = new OrFilter(qlocA3, qlocA31);
+        HasAttributeFilter qlocA32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelProvinciaMunicipios3");
+        OrFilter qlocA3OR = new OrFilter(new NodeFilter[]{qlocA3, qlocA31, qlocA32});
         qlocF3.setFilters(new NodeFilter[]{qlocA3OR});
         qlocF3.setURL(theURL);
         String qlocS3 = qlocF3.getText();
         qlocS3 = qlocS3.replace("UBICADA EN: ", "");
         //</editor-fold>
 
-        //5.- Quality (TENGO)
+        //5.- Quality
         //<editor-fold>
         FilterBean qqualF3 = new FilterBean();
         HasAttributeFilter qqualA3 = new HasAttributeFilter("id", "ctl01_LabelEstadoVivienda6");
@@ -1717,7 +1727,9 @@ public class Permutas_Main extends Frame {
         FilterBean qdetF3 = new FilterBean();
         HasAttributeFilter qdetA3 = new HasAttributeFilter("id", "ctl01_LabelDetalles6");
         HasAttributeFilter qdetA31 = new HasAttributeFilter("id", "ctl02_LabelDetalles6");
-        OrFilter qdetA3OR = new OrFilter(qdetA3, qdetA31);
+        HasAttributeFilter qdetA32 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelOtrosDetallesNecesito3");
+
+        OrFilter qdetA3OR = new OrFilter(new NodeFilter[]{qdetA3, qdetA31, qdetA32});
         qdetF3.setFilters(new NodeFilter[]{qdetA3OR});
         qdetF3.setURL(theURL);
         String qdetS3 = qdetF3.getText();
@@ -1808,7 +1820,8 @@ public class Permutas_Main extends Frame {
         FilterBean othF = new FilterBean();
         HasAttributeFilter othA = new HasAttributeFilter("id", "ctl01_LabelOtraInformacion");
         HasAttributeFilter othA1 = new HasAttributeFilter("id", "ctl02_LabelOtraInformacion");
-        OrFilter othAOR = new OrFilter(othA, othA1);
+        HasAttributeFilter othA2 = new HasAttributeFilter("id", "ctl00_MainPlaceHolder_LabelOtraInformacionSinfoto");
+        OrFilter othAOR = new OrFilter(new NodeFilter[]{othA, othA1, othA2});
         othF.setFilters(new NodeFilter[]{othAOR});
         othF.setURL(theURL);
         String othS = othF.getText();
@@ -1856,37 +1869,19 @@ public class Permutas_Main extends Frame {
             serElevH_3, serPuntAltH_3, serGasBalH_3, serGasCallH_3,
             serAg24HH_3, serCarpH_3, derS3, munS3, munCode3, habDummy3,
             dirdS3, quaUTS3, quaBTS3, repairdummy3, cperS_3, fobsS3, " --- ",
-            qtypeS, qroomS, qserS, qserSalaComW_1, qserSalaW_1, serComedorW_1,
-            serCocinaW_1, serCocinaComW_1, serAzotLibW_1, serAzotCompW_1,
-            serTelW_1,
-            serBalcW_1, serBarbacW_1, serTerrW_1, serPatW_1, serPortW_1,
-            serJardW_1,
-            serPiscW_1, serGaraW_1, serPosGaraW_1, serElevW_1, serPuntAltW_1,
-            serGasBalW_1, serGasCallW_1, serAg24HW_1, serCarpW_1, qlocS,
+            qtypeS, qroomS, qserS, qserS11, qserS12, qserS13, qserS14, qlocS,
             qqualS, qqualQS, qdetS,
             " --- ",
-            qtypeS2, qroomS2, qserS2, qserSalaComW_2, qserSalaW_2, serComedorW_2,
-            serCocinaW_2, serCocinaComW_2, serAzotLibW_2, serAzotCompW_2,
-            serTelW_2,
-            serBalcW_2, serBarbacW_2, serTerrW_2, serPatW_2, serPortW_2,
-            serJardW_2,
-            serPiscW_2, serGaraW_2, serPosGaraW_2, serElevW_2, serPuntAltW_2,
-            serGasBalW_2, serGasCallW_2, serAg24HW_2, serCarpW_2, qlocS2,
+            qtypeS2, qroomS2, qserS2, qserS21, qserS22, qserS23, qserS24, qlocS2,
             qqualS2, qqualQS2,
             qdetS2, " --- ",
-            qtypeS3, qroomS3, qserS3, qserSalaComW_3, qserSalaW_3, serComedorW_3,
-            serCocinaW_3, serCocinaComW_3, serAzotLibW_3, serAzotCompW_3,
-            serTelW_3,
-            serBalcW_3, serBarbacW_3, serTerrW_3, serPatW_3, serPortW_3,
-            serJardW_3,
-            serPiscW_3, serGaraW_3, serPosGaraW_3, serElevW_3, serPuntAltW_3,
-            serGasBalW_3, serGasCallW_3, serAg24HW_3, serCarpW_3,
+            qtypeS3, qroomS3, qserS3,  qserS31, qserS32, qserS33, qserS34,
             qlocS3, qqualS3, qqualQS3,
             qdetS3, " --- ",
             cnS, ownS, addrS, habanaDummy, phnS, emlS, othS, sidepaydummyGive,
             sidepaydummyReceive, sidepayUnspecifiedDirection};
 
-        //System.out.println("retArr length: " + retArr.length);
+        System.out.println("retArr length: " + retArr.length);
         //System.out.println(retArr[1]);
 
 
@@ -1897,7 +1892,7 @@ public class Permutas_Main extends Frame {
                     || retArr[p].contains("ofrezco") || retArr[p].contains("ofrezco") || retArr[p].contains("ofrezco"))) {
                 /*
                  * sidepaydummyGive
-                 */ retArr[223] = "1";
+                 */ retArr[166] = "1";
             }
 
             if ((retArr[p].contains("vuelto") || retArr[p].contains("vuelto") || retArr[p].contains("vuelto")) && (retArr[p].contains("pido") || retArr[p].contains("pido") || retArr[p].contains("pido")
@@ -1905,25 +1900,25 @@ public class Permutas_Main extends Frame {
                     || retArr[p].contains("pedimos") || retArr[p].contains("pedimos") || retArr[p].contains("pedimos"))) {
                 /*
                  * sidepaydummyReceive
-                 */ retArr[224] = "1";
+                 */ retArr[167] = "1";
             }
 
             if (retArr[p].contains("vuelto") || retArr[p].contains("vuelto") || retArr[p].contains("vuelto")) {
                 /*
                  * sidepayUnspecifiedDirection
-                 */ retArr[225] = "1";
+                 */ retArr[168] = "1";
             }
 
             if (retArr[p].contains("sin vuelto") || retArr[p].contains("sin vuelto") || retArr[p].contains("sin vuelto")) {
                 /*
                  * sidepaydummyGive
-                 */ retArr[223] = "0";
+                 */ retArr[166] = "0";
                 /*
                  * sidepaydummyReceive
-                 */ retArr[224] = "0";
+                 */ retArr[167] = "0";
                 /*
                  * sidepayUnspecifiedDirection
-                 */ retArr[225] = "0";
+                 */ retArr[168] = "0";
             }
         }
 
@@ -1941,6 +1936,8 @@ public class Permutas_Main extends Frame {
 
         return retStr;
     }
+
+    
 
     public String accentFix(String str) {
         str = Normalizer.normalize(str, Normalizer.Form.NFD);
