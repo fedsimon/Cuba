@@ -148,7 +148,8 @@ public class Permutas_Main extends Frame {
             //</editor-fold>
 
             + "Contact Name, Owner, Address, Address Mentions Habana Dummy, Phone Number, Email, Other Info, "
-            + "Side Payments Give Dummy, Side Payments Receive Dummy, Side Payments In Unspecified Direction Dummy  \n";
+            + "Side Payments Give Dummy, Side Payments Receive Dummy, Side Payments In Unspecified Direction Dummy,"
+            + "Scrape Date, File Name  \n";
     //</editor-fold>
 
     public static void main(String[] args) throws IOException, ParseException {
@@ -217,7 +218,7 @@ public class Permutas_Main extends Frame {
     public static void createDictionary() throws FileNotFoundException,
             IOException {
         Permutas_Main fixer2 = new Permutas_Main();
-        String fn = onMac + "Permutas_Only_Date_Dictionary.csv";
+        String fn = onMac + "Permutas_Date_Dictionary.csv";
         //"C:/Documents and Settings/fsimon0/My Documents/CubaData Original/"Permutas_Only_Date_Dictionary.csv"
         String municfn = onMac + "/MunicipioDictionaryaccentfix.csv";
         //"C:/Documents and Settings/fsimon0/My Documents/CubaData Original/MunicipioDictionaryaccentfix.csv"
@@ -254,13 +255,7 @@ public class Permutas_Main extends Frame {
 
         //1.- CODE && Date Dictionary
         //<editor-fold>
-        FilterBean codeFilter = new FilterBean();
-        HasAttributeFilter codeAttribute = new HasAttributeFilter("id", "ctl01_LabelCodigoPermutaUp");
-        HasAttributeFilter codeAttribute1 = new HasAttributeFilter("id", "ctl02_LabelCodigoPermutaUp");
-        OrFilter codeAttributeAND = new OrFilter(codeAttribute, codeAttribute1);
-        codeFilter.setFilters(new NodeFilter[]{codeAttributeAND});
-        codeFilter.setURL(theURL);
-        String code = codeFilter.getText();
+        String code = getCodeFromURL(theURL);
         code = code.replace("CÓDIGO", "");
         code = code.trim();
         String datepubl = "No Date";
@@ -281,7 +276,7 @@ public class Permutas_Main extends Frame {
         HasAttributeFilter typeAttribute = new HasAttributeFilter("id", "ctl01_LabelCantidades");
         HasAttributeFilter typeAttribute1 = new HasAttributeFilter("id", "ctl02_LabelCantidades");
         OrFilter typeAttributeAND = new OrFilter(typeAttribute, typeAttribute1);
-        typeFilter.setFilters(new NodeFilter[]{codeAttributeAND});
+        typeFilter.setFilters(new NodeFilter[]{typeAttributeAND});
         typeFilter.setURL(theURL);
         String type = typeFilter.getText();
         type = type.replace("PERMUTO:", "");
@@ -298,7 +293,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean locF = new FilterBean();
         HasAttributeFilter locA = new HasAttributeFilter("id", "ctl01_LabelTitulo");
-        locF.setFilters(new NodeFilter[]{locA});
+        HasAttributeFilter locA1 = new HasAttributeFilter("id", "ctl02_LabelTitulo");
+        OrFilter locAND = new OrFilter(locA, locA1);
+        locF.setFilters(new NodeFilter[]{locAND});
         locF.setURL(theURL);
         String hLocS = locF.getText();
         hLocS = fixer.accentFix(hLocS);
@@ -306,7 +303,9 @@ public class Permutas_Main extends Frame {
 
         FilterBean tipolocF = new FilterBean();
         HasAttributeFilter tiplocA = new HasAttributeFilter("id", "ctl01_LabelTipoLocal");
-        tipolocF.setFilters(new NodeFilter[]{tiplocA});
+        HasAttributeFilter tiplocA1 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal");
+        OrFilter tipLocAND = new OrFilter(tiplocA, tiplocA1);
+        tipolocF.setFilters(new NodeFilter[]{tipLocAND});
         tipolocF.setURL(theURL);
         String htipLocS = tipolocF.getText();
         htipLocS = htipLocS.replace(",", "");
@@ -318,7 +317,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean habF = new FilterBean();
         HasAttributeFilter habA = new HasAttributeFilter("id", "ctl01_LabelHabitaciones");
-        habF.setFilters(new NodeFilter[]{habA});
+        HasAttributeFilter habA1 = new HasAttributeFilter("id", "ctl02_LabelHabitaciones");
+        OrFilter habAND = new OrFilter(habA, habA1);
+        habF.setFilters(new NodeFilter[]{habAND});
         habF.setURL(theURL);
         String habS = habF.getText();
         if (habS.endsWith(",")) {
@@ -348,7 +349,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean serF = new FilterBean();
         HasAttributeFilter serA = new HasAttributeFilter("id", "ctl01_LabelServicios");
-        serF.setFilters(new NodeFilter[]{serA});
+        HasAttributeFilter serA1 = new HasAttributeFilter("id", "ctl02_LabelServicios");
+        OrFilter serAND = new OrFilter(serA, serA1);
+        serF.setFilters(new NodeFilter[]{serAND});
         serF.setURL(theURL);
         String serS = serF.getText();
 
@@ -443,7 +446,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean dirF = new FilterBean();
         HasAttributeFilter dirA = new HasAttributeFilter("id", "ctl01_LabelDireccionLugar");
-        dirF.setFilters(new NodeFilter[]{dirA});
+        HasAttributeFilter dirA1 = new HasAttributeFilter("id", "ctl02_LabelDireccionLugar");
+        OrFilter dirOR = new OrFilter(dirA, dirA1);
+        dirF.setFilters(new NodeFilter[]{dirOR});
         dirF.setURL(theURL);
         String derS = dirF.getText();
         derS = derS.replace("DIRECCIÓN: ", "");
@@ -457,7 +462,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean munF = new FilterBean();
         HasAttributeFilter munA = new HasAttributeFilter("id", "ctl01_LabelMunicipio");
-        munF.setFilters(new NodeFilter[]{munA});
+        HasAttributeFilter munA1 = new HasAttributeFilter("id", "ctl02_LabelMunicipio");
+        OrFilter munOR = new OrFilter(munA, munA1);
+        munF.setFilters(new NodeFilter[]{munOR});
         munF.setURL(theURL);
         String munS = munF.getText();
         //System.out.println("RAW MUNS" + munS);
@@ -494,7 +501,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean dirdF = new FilterBean();
         HasAttributeFilter dirdA = new HasAttributeFilter("id", "ctl01_LabelObservacionesDireccion");
-        dirdF.setFilters(new NodeFilter[]{dirdA});
+        HasAttributeFilter dirdA1 = new HasAttributeFilter("id", "ctl02_LabelObservacionesDireccion");
+        OrFilter dirdOR = new OrFilter(dirdA, dirdA1);
+        dirdF.setFilters(new NodeFilter[]{dirdOR});
         dirdF.setURL(theURL);
         String dirdS = dirdF.getText();
         dirdS = dirdS.replace("OBSERVACIONES PARA LA DIRECCIÓN: ", "");
@@ -504,7 +513,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean quaUTF = new FilterBean();
         HasAttributeFilter quaUTA = new HasAttributeFilter("id", "ctl01_LabelEstadoVivienda");
-        quaUTF.setFilters(new NodeFilter[]{quaUTA});
+        HasAttributeFilter quaUTA1 = new HasAttributeFilter("id", "ctl02_LabelEstadoVivienda");
+        OrFilter quaUTOR = new OrFilter(quaUTA, quaUTA1);
+        quaUTF.setFilters(new NodeFilter[]{quaUTOR});
         quaUTF.setURL(theURL);
         String quaUTS = quaUTF.getText();
         quaUTS = quaUTS.replace("ESTADO FÍSICO DE LA VIVIENDA: ", "");
@@ -515,7 +526,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean quaBTF = new FilterBean();
         HasAttributeFilter quaBTA = new HasAttributeFilter("id", "ctl01_LabelEstadoEdificio");
-        quaBTF.setFilters(new NodeFilter[]{quaBTA});
+        HasAttributeFilter quaBTA1 = new HasAttributeFilter("id", "ctl02_LabelEstadoEdificio");
+        OrFilter quaBTAOR = new OrFilter(quaBTA, quaBTA1);
+        quaBTF.setFilters(new NodeFilter[]{quaBTAOR});
         quaBTF.setURL(theURL);
         String quaBTS = quaBTF.getText();
         quaBTS = quaBTS.replace("ESTADO FÍSICO DE LA EDIFICACIÓN:", "");
@@ -531,7 +544,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean cperF_1 = new FilterBean();
         HasAttributeFilter cperA_1 = new HasAttributeFilter("id", "ctl01_LabelCantPersonas");
-        cperF_1.setFilters(new NodeFilter[]{cperA_1});
+        HasAttributeFilter cperA_11 = new HasAttributeFilter("id", "ctl02_LabelCantPersonas");
+        OrFilter cperA_1OR = new OrFilter(cperA_1, cperA_11);
+        cperF_1.setFilters(new NodeFilter[]{cperA_1OR});
         cperF_1.setURL(theURL);
         String cperS_1 = cperF_1.getText();
         cperS_1 = cperS_1.replace("CANTIDAD DE PERSONAS QUE PUEDEN VIVIR CÓMODAMENTE: ", "");
@@ -543,7 +558,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean fobsF = new FilterBean();
         HasAttributeFilter fobsA = new HasAttributeFilter("id", "ctl01_LabelObservaciones");
-        fobsF.setFilters(new NodeFilter[]{fobsA});
+        HasAttributeFilter fobsA1 = new HasAttributeFilter("id", "ctl02_LabelObservaciones");
+        OrFilter fobs_OR = new OrFilter(fobsA, fobsA1);
+        fobsF.setFilters(new NodeFilter[]{fobs_OR});
         fobsF.setURL(theURL);
         String fobsS = fobsF.getText();
         fobsS = fobsS.replace("OTRAS OBSERVACIONES SOBRE LA VIVIENDA: ", "");
@@ -557,7 +574,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean locF2 = new FilterBean();
         HasAttributeFilter locA2 = new HasAttributeFilter("id", "ctl01_LabelTitulo2");
-        locF2.setFilters(new NodeFilter[]{locA2});
+        HasAttributeFilter locA21 = new HasAttributeFilter("id", "ctl02_LabelTitulo2");
+        OrFilter locA2OR = new OrFilter(locA2, locA21);
+        locF2.setFilters(new NodeFilter[]{locA2OR});
         locF2.setURL(theURL);
         String hLocS2 = locF2.getText();
         hLocS2 = fixer.accentFix(hLocS2);
@@ -565,7 +584,9 @@ public class Permutas_Main extends Frame {
 
         FilterBean tipolocF_2 = new FilterBean();
         HasAttributeFilter tipolocA_2 = new HasAttributeFilter("id", "ctl01_LabelTipoLocal2");
-        tipolocF_2.setFilters(new NodeFilter[]{tipolocA_2});
+        HasAttributeFilter tipolocA_21 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal2");
+        OrFilter tipolocOR = new OrFilter(tipolocA_2, tipolocA_21);
+        tipolocF_2.setFilters(new NodeFilter[]{tipolocOR});
         tipolocF_2.setURL(theURL);
         String htipLocS_2 = tipolocF_2.getText();
         htipLocS_2 = htipLocS_2.replace(",", "");
@@ -577,7 +598,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean habF2 = new FilterBean();
         HasAttributeFilter habA2 = new HasAttributeFilter("id", "ctl01_LabelHabitaciones2");
-        habF2.setFilters(new NodeFilter[]{habA2});
+        HasAttributeFilter habA21 = new HasAttributeFilter("id", "ctl02_LabelHabitaciones2");
+        OrFilter habOR = new OrFilter(habA2, habA21);
+        habF2.setFilters(new NodeFilter[]{habOR});
         habF2.setURL(theURL);
         String habS2 = habF2.getText();
         if (habS2.endsWith(",")) {
@@ -607,7 +630,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean serF_2 = new FilterBean();
         HasAttributeFilter serA_2 = new HasAttributeFilter("id", "ctl01_LabelServicios2");
-        serF_2.setFilters(new NodeFilter[]{serA_2});
+        HasAttributeFilter serA_21 = new HasAttributeFilter("id", "ctl02_LabelServicios2");
+        OrFilter serOR = new OrFilter(serA_2, serA_21);
+        serF_2.setFilters(new NodeFilter[]{serOR});
         serF_2.setURL(theURL);
         String serS_2 = serF_2.getText();
 
@@ -701,7 +726,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean dirF2 = new FilterBean();
         HasAttributeFilter dirA2 = new HasAttributeFilter("id", "ctl01_LabelDireccionLugar2");
-        dirF2.setFilters(new NodeFilter[]{dirA2});
+        HasAttributeFilter dirA21 = new HasAttributeFilter("id", "ctl02_LabelDireccionLugar2");
+        OrFilter dirAOR = new OrFilter(dirA2, dirA21);
+        dirF2.setFilters(new NodeFilter[]{dirAOR});
         dirF2.setURL(theURL);
         String derS2 = dirF2.getText();
         derS2 = derS2.replace("DIRECCIÓN: ", "");
@@ -714,7 +741,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean munF2 = new FilterBean();
         HasAttributeFilter munA2 = new HasAttributeFilter("id", "ctl01_LabelMunicipio2");
-        munF2.setFilters(new NodeFilter[]{munA2});
+        HasAttributeFilter munA21 = new HasAttributeFilter("id", "ctl02_LabelMunicipio2");
+        OrFilter munA2OR = new OrFilter(munA2, munA21);
+        munF2.setFilters(new NodeFilter[]{munA2OR});
         munF2.setURL(theURL);
         String munS2 = munF2.getText();
         String habDummy2 = "0";
@@ -748,7 +777,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean dirdF2 = new FilterBean();
         HasAttributeFilter dirdA2 = new HasAttributeFilter("id", "ctl01_LabelObservacionesDireccion2");
-        dirdF2.setFilters(new NodeFilter[]{dirdA2});
+        HasAttributeFilter dirdA21 = new HasAttributeFilter("id", "ctl02_LabelObservacionesDireccion2");
+        OrFilter dirdA2OR = new OrFilter(dirdA2, dirdA21);
+        dirdF2.setFilters(new NodeFilter[]{dirdA2OR});
         dirdF2.setURL(theURL);
         String dirdS2 = dirdF2.getText();
         dirdS2 = dirdS2.replace("OBSERVACIONES PARA LA DIRECCIÓN: ", "");
@@ -758,7 +789,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean quaUTF2 = new FilterBean();
         HasAttributeFilter quaUTA2 = new HasAttributeFilter("id", "ctl01_LabelEstadoVivienda2");
-        quaUTF2.setFilters(new NodeFilter[]{quaUTA2});
+        HasAttributeFilter quaUTA21 = new HasAttributeFilter("id", "ctl02_LabelEstadoVivienda2");
+        OrFilter quaUTAOR = new OrFilter(quaUTA2, quaUTA21);
+        quaUTF2.setFilters(new NodeFilter[]{quaUTAOR});
         quaUTF2.setURL(theURL);
         String quaUTS2 = quaUTF2.getText();
         quaUTS2 = quaUTS2.replace("ESTADO FÍSICO DE LA VIVIENDA: ", "");
@@ -770,7 +803,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean quaBTF2 = new FilterBean();
         HasAttributeFilter quaBTA2 = new HasAttributeFilter("id", "ctl01_LabelEstadoEdificio2");
-        quaBTF2.setFilters(new NodeFilter[]{quaBTA2});
+        HasAttributeFilter quaBTA21 = new HasAttributeFilter("id", "ctl02_LabelEstadoEdificio2");
+        OrFilter quaBTA2OR = new OrFilter(quaBTA2, quaBTA21);
+        quaBTF2.setFilters(new NodeFilter[]{quaBTA2OR});
         quaBTF2.setURL(theURL);
         String quaBTS2 = quaBTF2.getText();
         quaBTS2 = quaBTS2.replace("ESTADO FÍSICO DE LA EDIFICACIÓN:", "");
@@ -786,7 +821,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean cperF_2 = new FilterBean();
         HasAttributeFilter cperA_2 = new HasAttributeFilter("id", "ctl01_LabelCantPersonas2");
-        cperF_2.setFilters(new NodeFilter[]{cperA_2});
+        HasAttributeFilter cperA_21 = new HasAttributeFilter("id", "ctl02_LabelCantPersonas2");
+        OrFilter cperA_2OR = new OrFilter(cperA_2, cperA_21);
+        cperF_2.setFilters(new NodeFilter[]{cperA_2OR});
         cperF_2.setURL(theURL);
         String cperS_2 = cperF_2.getText();
         cperS_2 = cperS_2.replace("CANTIDAD DE PERSONAS QUE PUEDEN VIVIR CÓMODAMENTE: ", "");
@@ -798,7 +835,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean fobsF2 = new FilterBean();
         HasAttributeFilter fobsA2 = new HasAttributeFilter("id", "ctl01_LabelObservaciones2");
-        fobsF2.setFilters(new NodeFilter[]{fobsA2});
+        HasAttributeFilter fobsA21 = new HasAttributeFilter("id", "ctl02_LabelObservaciones2");
+        OrFilter fobsA2OR = new OrFilter(fobsA2, fobsA21);
+        fobsF2.setFilters(new NodeFilter[]{fobsA2OR});
         fobsF2.setURL(theURL);
         String fobsS2 = fobsF2.getText();
         fobsS2 = fobsS2.replace("OTRAS OBSERVACIONES SOBRE LA VIVIENDA: ", "");
@@ -853,7 +892,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean locF3 = new FilterBean();
         HasAttributeFilter locA3 = new HasAttributeFilter("id", "ctl01_LabelTitulo3");
-        locF3.setFilters(new NodeFilter[]{locA3});
+        HasAttributeFilter locA31 = new HasAttributeFilter("id", "ctl02_LabelTitulo3");
+        OrFilter locA3OR = new OrFilter(locA3, locA31);
+        locF3.setFilters(new NodeFilter[]{locA3OR});
         locF3.setURL(theURL);
         String hLocS3 = locF3.getText();
         hLocS3 = fixer.accentFix(hLocS3);
@@ -861,7 +902,9 @@ public class Permutas_Main extends Frame {
 
         FilterBean tipolocF_3 = new FilterBean();
         HasAttributeFilter tipolocA_3 = new HasAttributeFilter("id", "ctl01_LabelTipoLocal3");
-        tipolocF_3.setFilters(new NodeFilter[]{tipolocA_3});
+        HasAttributeFilter tipolocA_31 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal3");
+        OrFilter tipolocA_3OR = new OrFilter(tipolocA_3, tipolocA_31);
+        tipolocF_3.setFilters(new NodeFilter[]{tipolocA_3OR});
         tipolocF_3.setURL(theURL);
         String htipLocS_3 = tipolocF_3.getText();
         htipLocS_3 = htipLocS_3.replace(",", "");
@@ -872,7 +915,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean habF3 = new FilterBean();
         HasAttributeFilter habA3 = new HasAttributeFilter("id", "ctl01_LabelHabitaciones3");
-        habF3.setFilters(new NodeFilter[]{habA3});
+        HasAttributeFilter habA31 = new HasAttributeFilter("id", "ctl02_LabelHabitaciones3");
+        OrFilter habA3OR = new OrFilter(habA3, habA31);
+        habF3.setFilters(new NodeFilter[]{habA3OR});
         habF3.setURL(theURL);
         String habS3 = habF3.getText();
         if (habS3.endsWith(",")) {
@@ -902,7 +947,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean serF_3 = new FilterBean();
         HasAttributeFilter serA_3 = new HasAttributeFilter("id", "ctl01_LabelServicios3");
-        serF_3.setFilters(new NodeFilter[]{serA_3});
+        HasAttributeFilter serA_31 = new HasAttributeFilter("id", "ctl02_LabelServicios3");
+        OrFilter serA_3OR = new OrFilter(serA_3, serA_31);
+        serF_3.setFilters(new NodeFilter[]{serA_3OR});
         serF_3.setURL(theURL);
         String serS_3 = serF_3.getText();
 
@@ -996,7 +1043,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean dirF3 = new FilterBean();
         HasAttributeFilter dirA3 = new HasAttributeFilter("id", "ctl01_LabelDireccionLugar3");
-        dirF3.setFilters(new NodeFilter[]{dirA3});
+        HasAttributeFilter dirA31 = new HasAttributeFilter("id", "ctl02_LabelDireccionLugar3");
+        OrFilter dirA3OR = new OrFilter(dirA3, dirA31);
+        dirF3.setFilters(new NodeFilter[]{dirA3OR});
         dirF3.setURL(theURL);
         String derS3 = dirF3.getText();
         derS3 = derS3.replace("DIRECCIÓN: ", "");
@@ -1010,7 +1059,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean munF3 = new FilterBean();
         HasAttributeFilter munA3 = new HasAttributeFilter("id", "ctl01_LabelMunicipio3");
-        munF3.setFilters(new NodeFilter[]{munA3});
+        HasAttributeFilter munA31 = new HasAttributeFilter("id", "ctl02_LabelMunicipio3");
+        OrFilter munA3OR = new OrFilter(munA3, munA31);
+        munF3.setFilters(new NodeFilter[]{munA3OR});
         munF3.setURL(theURL);
         String munS3 = munF3.getText();
         String munCode3 = "0";
@@ -1046,7 +1097,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean dirdF3 = new FilterBean();
         HasAttributeFilter dirdA3 = new HasAttributeFilter("id", "ctl01_LabelObservacionesDireccion3");
-        dirdF3.setFilters(new NodeFilter[]{dirdA3});
+        HasAttributeFilter dirdA31 = new HasAttributeFilter("id", "ctl02_LabelObservacionesDireccion3");
+        OrFilter dirdA3OR = new OrFilter(dirdA3, dirdA31);
+        dirdF3.setFilters(new NodeFilter[]{dirdA3OR});
         dirdF3.setURL(theURL);
         String dirdS3 = dirdF3.getText();
         dirdS3 = dirdS3.replace("OBSERVACIONES PARA LA DIRECCIÓN: ", "");
@@ -1056,7 +1109,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean quaUTF3 = new FilterBean();
         HasAttributeFilter quaUTA3 = new HasAttributeFilter("id", "ctl01_LabelEstadoVivienda3");
-        quaUTF3.setFilters(new NodeFilter[]{quaUTA3});
+        HasAttributeFilter quaUTA31 = new HasAttributeFilter("id", "ctl02_LabelEstadoVivienda3");
+        OrFilter quaUTA3OR = new OrFilter(quaUTA3, quaUTA31);
+        quaUTF3.setFilters(new NodeFilter[]{quaUTA3OR});
         quaUTF3.setURL(theURL);
         String quaUTS3 = quaUTF3.getText();
         quaUTS3 = quaUTS3.replace("ESTADO FÍSICO DE LA VIVIENDA: ", "");
@@ -1068,7 +1123,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean quaBTF3 = new FilterBean();
         HasAttributeFilter quaBTA3 = new HasAttributeFilter("id", "ctl01_LabelEstadoEdificio3");
-        quaBTF3.setFilters(new NodeFilter[]{quaBTA3});
+        HasAttributeFilter quaBTA31 = new HasAttributeFilter("id", "ctl02_LabelEstadoEdificio3");
+        OrFilter quaBTA3OR = new OrFilter(quaBTA3, quaBTA31);
+        quaBTF3.setFilters(new NodeFilter[]{quaBTA3OR});
         quaBTF3.setURL(theURL);
         String quaBTS3 = quaBTF3.getText();
         quaBTS3 = quaBTS3.replace("ESTADO FÍSICO DE LA EDIFICACIÓN:", "");
@@ -1085,7 +1142,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean cperF_3 = new FilterBean();
         HasAttributeFilter cperA_3 = new HasAttributeFilter("id", "ctl01_LabelCantPersonas3");
-        cperF_3.setFilters(new NodeFilter[]{cperA_3});
+        HasAttributeFilter cperA_31 = new HasAttributeFilter("id", "ctl02_LabelCantPersonas3");
+        OrFilter cperA_3OR = new OrFilter(cperA_3, cperA_31);
+        cperF_3.setFilters(new NodeFilter[]{cperA_3OR});
         cperF_3.setURL(theURL);
         String cperS_3 = cperF_3.getText();
         cperS_3 = cperS_3.replace("CANTIDAD DE PERSONAS QUE PUEDEN VIVIR CÓMODAMENTE: ", "");
@@ -1096,7 +1155,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean fobsF3 = new FilterBean();
         HasAttributeFilter fobsA3 = new HasAttributeFilter("id", "ctl01_LabelObservaciones3");
-        fobsF3.setFilters(new NodeFilter[]{fobsA3});
+        HasAttributeFilter fobsA31 = new HasAttributeFilter("id", "ctl02_LabelObservaciones3");
+        OrFilter fobsA3OR = new OrFilter(fobsA3, fobsA3);
+        fobsF3.setFilters(new NodeFilter[]{fobsA3OR});
         fobsF3.setURL(theURL);
         String fobsS3 = fobsF3.getText();
         fobsS3 = fobsS3.replace("OTRAS OBSERVACIONES SOBRE LA VIVIENDA: ", "");
@@ -1151,7 +1212,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qtypeF = new FilterBean();
         HasAttributeFilter qtypeA = new HasAttributeFilter("id", "ctl01_LabelTipoLocal4");
-        qtypeF.setFilters(new NodeFilter[]{qtypeA});
+        HasAttributeFilter qtypeA1 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal4");
+        OrFilter qtypeAOR = new OrFilter(qtypeA, qtypeA1);
+        qtypeF.setFilters(new NodeFilter[]{qtypeAOR});
         qtypeF.setURL(theURL);
         String qtypeS = qtypeF.getText();
         //</editor-fold>
@@ -1161,7 +1224,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qroomF = new FilterBean();
         HasAttributeFilter qroomA = new HasAttributeFilter("id", "ctl01_LabelHabitaciones4");
-        qroomF.setFilters(new NodeFilter[]{qroomA});
+        HasAttributeFilter qroomA1 = new HasAttributeFilter("id", "ctl02_LabelHabitaciones4");
+        OrFilter qroomAOR = new OrFilter(qroomA, qroomA1);
+        qroomF.setFilters(new NodeFilter[]{qroomAOR});
         qroomF.setURL(theURL);
         String qroomS = qroomF.getText();
         qroomS = accentFix(qroomS);
@@ -1172,7 +1237,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qserF = new FilterBean();
         HasAttributeFilter qserA = new HasAttributeFilter("id", "ctl01_LabelServicios4");
-        qserF.setFilters(new NodeFilter[]{qserA});
+        HasAttributeFilter qserA1 = new HasAttributeFilter("id", "ctl02_LabelServicios4");
+        OrFilter qserAOR = new OrFilter(qserA, qserA1);
+        qserF.setFilters(new NodeFilter[]{qserAOR});
         qserF.setURL(theURL);
         String qserS = qserF.getText();
         String qserSalaComW_1 = "0", qserSalaW_1 = "0", serComedorW_1 = "0",
@@ -1262,7 +1329,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qlocF = new FilterBean();
         HasAttributeFilter qlocA = new HasAttributeFilter("id", "ctl01_LabelProvinciasMunicipios4");
-        qlocF.setFilters(new NodeFilter[]{qlocA});
+        HasAttributeFilter qlocA1 = new HasAttributeFilter("id", "ctl02_LabelProvinciasMunicipios4");
+        OrFilter qlocAOR = new OrFilter(qlocA, qlocA1);
+        qlocF.setFilters(new NodeFilter[]{qlocAOR});
         qlocF.setURL(theURL);
         String qlocS = qlocF.getText();
         qlocS = qlocS.replace("UBICADA EN: ", "");
@@ -1272,7 +1341,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qqualF = new FilterBean();
         HasAttributeFilter qqualA = new HasAttributeFilter("id", "ctl01_LabelEstadoVivienda4");
-        qqualF.setFilters(new NodeFilter[]{qqualA});
+        HasAttributeFilter qqualA1 = new HasAttributeFilter("id", "ctl02_LabelEstadoVivienda4");
+        OrFilter qqualAOR = new OrFilter(qqualA, qqualA1);
+        qqualF.setFilters(new NodeFilter[]{qqualAOR});
         qqualF.setURL(theURL);
         String qqualS = qqualF.getText();
         qqualS = qqualS.replace("ESTADO FÍSICO DE LA VIVIENDA: ", "");
@@ -1285,7 +1356,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qqualQF = new FilterBean();
         HasAttributeFilter qqualQA = new HasAttributeFilter("id", "ctl01_LabelEstadoEdificio4");
-        qqualQF.setFilters(new NodeFilter[]{qqualQA});
+        HasAttributeFilter qqualQA1 = new HasAttributeFilter("id", "ctl02_LabelEstadoEdificio4");
+        OrFilter qqualQAOR = new OrFilter(qqualQA, qqualQA1);
+        qqualQF.setFilters(new NodeFilter[]{qqualQAOR});
         qqualQF.setURL(theURL);
         String qqualQS = qqualQF.getText();
         qqualQS = qqualQS.replace("ESTADO FÍSICO DE LA EDIFICACIÓN: ", "");
@@ -1298,7 +1371,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qdetF = new FilterBean();
         HasAttributeFilter qdetA = new HasAttributeFilter("id", "ctl01_LabelDetalles4");
-        qdetF.setFilters(new NodeFilter[]{qdetA});
+        HasAttributeFilter qdetA1 = new HasAttributeFilter("id", "ctl02_LabelDetalles4");
+        OrFilter qdetAOR = new OrFilter(qdetA, qdetA1);
+        qdetF.setFilters(new NodeFilter[]{qdetAOR});
         qdetF.setURL(theURL);
         String qdetS = qdetF.getText();
         qdetS = qdetS.replace("OTROS DETALLES DE LA VIVIENDA QUE BUSCO: ", "");
@@ -1310,7 +1385,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qtypeF2 = new FilterBean();
         HasAttributeFilter qtypeA2 = new HasAttributeFilter("id", "ctl01_LabelTipoLocal5");
-        qtypeF2.setFilters(new NodeFilter[]{qtypeA2});
+        HasAttributeFilter qtypeA21 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal5");
+        OrFilter qtypeA2OR = new OrFilter(qtypeA2, qtypeA21);
+        qtypeF2.setFilters(new NodeFilter[]{qtypeA2OR});
         qtypeF2.setURL(theURL);
         String qtypeS2 = qtypeF2.getText();
         //</editor-fold>
@@ -1319,7 +1396,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qroomF2 = new FilterBean();
         HasAttributeFilter qroomA2 = new HasAttributeFilter("id", "ctl01_LabelHabitaciones5");
-        qroomF2.setFilters(new NodeFilter[]{qroomA2});
+        HasAttributeFilter qroomA21 = new HasAttributeFilter("id", "ctl02_LabelHabitaciones5");
+        OrFilter qroomA2OR = new OrFilter(qroomA2, qroomA21);
+        qroomF2.setFilters(new NodeFilter[]{qroomA2OR});
         qroomF2.setURL(theURL);
         String qroomS2 = qroomF2.getText();
         qroomS2 = accentFix(qroomS2);
@@ -1329,7 +1408,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qserF2 = new FilterBean();
         HasAttributeFilter qserA2 = new HasAttributeFilter("id", "ctl01_LabelServicios5");
-        qserF2.setFilters(new NodeFilter[]{qserA2});
+        HasAttributeFilter qserA21 = new HasAttributeFilter("id", "ctl02_LabelServicios5");
+        OrFilter qserA2OR = new OrFilter(qserA2, qserA21);
+        qserF2.setFilters(new NodeFilter[]{qserA2OR});
         qserF2.setURL(theURL);
         String qserS2 = qserF2.getText();
         String qserSalaComW_2 = "0", qserSalaW_2 = "0", serComedorW_2 = "0",
@@ -1419,7 +1500,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qlocF2 = new FilterBean();
         HasAttributeFilter qlocA2 = new HasAttributeFilter("id", "ctl01_LabelProvinciasMunicipios5");
-        qlocF2.setFilters(new NodeFilter[]{qlocA2});
+        HasAttributeFilter qlocA21 = new HasAttributeFilter("id", "ctl02_LabelProvinciasMunicipios5");
+        OrFilter qlocA2OR = new OrFilter(qlocA2, qlocA21);
+        qlocF2.setFilters(new NodeFilter[]{qlocA2OR});
         qlocF2.setURL(theURL);
         String qlocS2 = qlocF2.getText();
         qlocS2 = qlocS2.replace("UBICADA EN: ", "");
@@ -1429,7 +1512,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qqualF2 = new FilterBean();
         HasAttributeFilter qqualA2 = new HasAttributeFilter("id", "ctl01_LabelEstadoVivienda5");
-        qqualF2.setFilters(new NodeFilter[]{qqualA2});
+        HasAttributeFilter qqualA21 = new HasAttributeFilter("id", "ctl02_LabelEstadoVivienda5");
+        OrFilter qqualA2OR = new OrFilter(qqualA2, qqualA21);
+        qqualF2.setFilters(new NodeFilter[]{qqualA2OR});
         qqualF2.setURL(theURL);
         String qqualS2 = qqualF2.getText();
         qqualS2 = qualityreplacer(qqualS2);
@@ -1440,7 +1525,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qqualQF2 = new FilterBean();
         HasAttributeFilter qqualQA2 = new HasAttributeFilter("id", "ctl01_LabelEstadoEdificio5");
-        qqualQF2.setFilters(new NodeFilter[]{qqualQA2});
+        HasAttributeFilter qqualQA21 = new HasAttributeFilter("id", "ctl02_LabelEstadoEdificio5");
+        OrFilter qqualQA2OR = new OrFilter(qqualQA2, qqualQA21);
+        qqualQF2.setFilters(new NodeFilter[]{qqualQA2OR});
         qqualQF2.setURL(theURL);
         String qqualQS2 = qqualQF2.getText();
         qqualQS2 = qualityreplacer(qqualQS2);
@@ -1451,7 +1538,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qdetF2 = new FilterBean();
         HasAttributeFilter qdetA2 = new HasAttributeFilter("id", "ctl01_LabelDetalles5");
-        qdetF2.setFilters(new NodeFilter[]{qdetA2});
+        HasAttributeFilter qdetA21 = new HasAttributeFilter("id", "ctl02_LabelDetalles5");
+        OrFilter qdetA2OR = new OrFilter(qdetA2, qdetA21);
+        qdetF2.setFilters(new NodeFilter[]{qdetA2OR});
         qdetF2.setURL(theURL);
         String qdetS2 = qdetF2.getText();
         qdetS2 = qdetS2.replace("OTROS DETALLES DE LA VIVIENDA QUE BUSCO: ", "");
@@ -1474,7 +1563,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qtypeF3 = new FilterBean();
         HasAttributeFilter qtypeA3 = new HasAttributeFilter("id", "ctl01_LabelTipoLocal6");
-        qtypeF3.setFilters(new NodeFilter[]{qtypeA3});
+        HasAttributeFilter qtypeA31 = new HasAttributeFilter("id", "ctl02_LabelTipoLocal6");
+        OrFilter qtypeA3OR = new OrFilter(qtypeA3, qtypeA31);
+        qtypeF3.setFilters(new NodeFilter[]{qtypeA3OR});
         qtypeF3.setURL(theURL);
         String qtypeS3 = qtypeF3.getText();
         //</editor-fold>
@@ -1483,7 +1574,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qroomF3 = new FilterBean();
         HasAttributeFilter qroomA3 = new HasAttributeFilter("id", "ctl01_LabelHabitaciones6");
-        qroomF3.setFilters(new NodeFilter[]{qroomA3});
+        HasAttributeFilter qroomA31 = new HasAttributeFilter("id", "ctl02_LabelHabitaciones6");
+        OrFilter qroomA3OR = new OrFilter(qroomA3, qroomA31);
+        qroomF3.setFilters(new NodeFilter[]{qroomA3OR});
         qroomF3.setURL(theURL);
         String qroomS3 = qroomF3.getText();
         qroomS3 = accentFix(qroomS3);
@@ -1493,7 +1586,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qserF3 = new FilterBean();
         HasAttributeFilter qserA3 = new HasAttributeFilter("id", "ctl01_LabelServicios6");
-        qserF3.setFilters(new NodeFilter[]{qserA3});
+        HasAttributeFilter qserA31 = new HasAttributeFilter("id", "ctl02_LabelServicios6");
+        OrFilter qserA3OR = new OrFilter(qserA3, qserA31);
+        qserF3.setFilters(new NodeFilter[]{qserA3OR});
         qserF3.setURL(theURL);
         String qserS3 = qserF2.getText();
         String qserSalaComW_3 = "0", qserSalaW_3 = "0", serComedorW_3 = "0",
@@ -1583,7 +1678,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qlocF3 = new FilterBean();
         HasAttributeFilter qlocA3 = new HasAttributeFilter("id", "ctl01_LabelProvinciasMunicipios6");
-        qlocF3.setFilters(new NodeFilter[]{qlocA3});
+        HasAttributeFilter qlocA31 = new HasAttributeFilter("id", "ctl02_LabelProvinciasMunicipios6");
+        OrFilter qlocA3OR = new OrFilter(qlocA3, qlocA31);
+        qlocF3.setFilters(new NodeFilter[]{qlocA3OR});
         qlocF3.setURL(theURL);
         String qlocS3 = qlocF3.getText();
         qlocS3 = qlocS3.replace("UBICADA EN: ", "");
@@ -1593,7 +1690,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qqualF3 = new FilterBean();
         HasAttributeFilter qqualA3 = new HasAttributeFilter("id", "ctl01_LabelEstadoVivienda6");
-        qqualF3.setFilters(new NodeFilter[]{qqualA3});
+        HasAttributeFilter qqualA31 = new HasAttributeFilter("id", "ctl02_LabelEstadoVivienda6");
+        OrFilter qqualA3OR = new OrFilter(qqualA3, qqualA31);
+        qqualF3.setFilters(new NodeFilter[]{qqualA3OR});
         qqualF3.setURL(theURL);
         String qqualS3 = qqualF3.getText();
         qqualS3 = qualityreplacer(qqualS3);
@@ -1604,7 +1703,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qqualQF3 = new FilterBean();
         HasAttributeFilter qqualQA3 = new HasAttributeFilter("id", "ctl01_LabelEstadoEdificio6");
-        qqualQF3.setFilters(new NodeFilter[]{qqualQA3});
+        HasAttributeFilter qqualQA31 = new HasAttributeFilter("id", "ctl02_LabelEstadoEdificio6");
+        OrFilter qqualQA3OR = new OrFilter(qqualQA3, qqualQA31);
+        qqualQF3.setFilters(new NodeFilter[]{qqualQA3OR});
         qqualQF3.setURL(theURL);
         String qqualQS3 = qqualQF3.getText();
         qqualQS3 = qualityreplacer(qqualQS3);
@@ -1615,7 +1716,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean qdetF3 = new FilterBean();
         HasAttributeFilter qdetA3 = new HasAttributeFilter("id", "ctl01_LabelDetalles6");
-        qdetF3.setFilters(new NodeFilter[]{qdetA3});
+        HasAttributeFilter qdetA31 = new HasAttributeFilter("id", "ctl02_LabelDetalles6");
+        OrFilter qdetA3OR = new OrFilter(qdetA3, qdetA31);
+        qdetF3.setFilters(new NodeFilter[]{qdetA3OR});
         qdetF3.setURL(theURL);
         String qdetS3 = qdetF3.getText();
         qdetS3 = qdetS3.replace("OTROS DETALLES DE LA VIVIENDA QUE BUSCO: ", "");
@@ -1639,7 +1742,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean cnF = new FilterBean();
         HasAttributeFilter cnA = new HasAttributeFilter("id", "ctl01_LabelContacto");
-        cnF.setFilters(new NodeFilter[]{cnA});
+        HasAttributeFilter cnA1 = new HasAttributeFilter("id", "ctl02_LabelContacto");
+        OrFilter cnAOR = new OrFilter(cnA, cnA1);
+        cnF.setFilters(new NodeFilter[]{cnAOR});
         cnF.setURL(theURL);
         String cnS = cnF.getText();
         cnS = cnS.replace("CONTACTAR A: ", "");
@@ -1649,7 +1754,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean ownF = new FilterBean();
         HasAttributeFilter ownA = new HasAttributeFilter("id", "ctl01_LabelPropietario");
-        ownF.setFilters(new NodeFilter[]{ownA});
+        HasAttributeFilter ownA1 = new HasAttributeFilter("id", "ctl02_LabelPropietario");
+        OrFilter ownAOR = new OrFilter(ownA, ownA1);
+        ownF.setFilters(new NodeFilter[]{ownAOR});
         ownF.setURL(theURL);
         String ownS = ownF.getText();
         ownS = ownS.replace("PROPIETARIO DE LA VIVIENDA: ", "");
@@ -1659,7 +1766,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean addrF = new FilterBean();
         HasAttributeFilter addrA = new HasAttributeFilter("id", "ctl01_LabelDireccionContacto");
-        addrF.setFilters(new NodeFilter[]{addrA});
+        HasAttributeFilter addrA1 = new HasAttributeFilter("id", "ctl02_LabelDireccionContacto");
+        OrFilter addrAOR = new OrFilter(addrA, addrA1);
+        addrF.setFilters(new NodeFilter[]{addrAOR});
         addrF.setURL(theURL);
         String addrS = addrF.getText();
         addrS = addrS.replace("DIRECCIÓN: ", "");
@@ -1674,7 +1783,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean phnF = new FilterBean();
         HasAttributeFilter phnA = new HasAttributeFilter("id", "ctl01_LabelTelefonoContacto");
-        phnF.setFilters(new NodeFilter[]{phnA});
+        HasAttributeFilter phnA1 = new HasAttributeFilter("id", "ctl02_LabelTelefonoContacto");
+        OrFilter phnAOR = new OrFilter(phnA, phnA1);
+        phnF.setFilters(new NodeFilter[]{phnAOR});
         phnF.setURL(theURL);
         String phnS = phnF.getText();
         phnS = phnS.replace("TELÉFONO:", "");
@@ -1684,7 +1795,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean emlF = new FilterBean();
         HasAttributeFilter emlA = new HasAttributeFilter("id", "ctl01_LabelCorreo");
-        emlF.setFilters(new NodeFilter[]{emlA});
+        HasAttributeFilter emlA1 = new HasAttributeFilter("id", "ctl02_LabelCorreo");
+        OrFilter emlAOR = new OrFilter(emlA, emlA1);
+        emlF.setFilters(new NodeFilter[]{emlAOR});
         emlF.setURL(theURL);
         String emlS = emlF.getText();
         emlS = emlS.replace("CORREO ELECTRÓNICO: ", "");
@@ -1694,7 +1807,9 @@ public class Permutas_Main extends Frame {
         //<editor-fold>
         FilterBean othF = new FilterBean();
         HasAttributeFilter othA = new HasAttributeFilter("id", "ctl01_LabelOtraInformacion");
-        othF.setFilters(new NodeFilter[]{othA});
+        HasAttributeFilter othA1 = new HasAttributeFilter("id", "ctl02_LabelOtraInformacion");
+        OrFilter othAOR = new OrFilter(othA, othA1);
+        othF.setFilters(new NodeFilter[]{othAOR});
         othF.setURL(theURL);
         String othS = othF.getText();
         othS = othS.replace("OTRA INFORMACIÓN DE CONTACTO: ", "");
@@ -1858,7 +1973,6 @@ public class Permutas_Main extends Frame {
         String towrite = "";
         String path = "";
 
-
         // GET ROOT FILE
         File dir1 = new File(onMac);
         //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/"
@@ -1869,6 +1983,9 @@ public class Permutas_Main extends Frame {
 
         // GET ALL date FOLDERS
         for (int i = 0; i < datefolderChildren.length; i++) {
+            if(datefolderChildren[i].contains("$")){
+                continue;
+            }
             date = datefolderChildren[i];
             // APPLY ALL ALGORITHM TO ALL datefolders
             String enclosing = onMac + date + "/permutas/anuncios/";
@@ -1879,8 +1996,12 @@ public class Permutas_Main extends Frame {
 
             File theTXTFile = new File(onMac + date + "/Cubisima -" + date + " - Permutas.csv");
             //"C:/Documents and Settings/fsimon0/My Documents/Cubisima Final/"+date+"/Cubisima -"+date+" - Permutas.csv"
-            FileWriter aFileWriter  = new FileWriter(theTXTFile);
-
+            
+            FileWriter aFileWriter = null;
+            try {
+                aFileWriter = new FileWriter(theTXTFile);
+            } catch (IOException e1) {
+            }
             if (aFileWriter != null) {
                 aFileWriter.write(headers);
             }
@@ -1894,8 +2015,8 @@ public class Permutas_Main extends Frame {
 
                     if (aFileWriter != null) {
                         path = date.replace(",", ";") + "," + individualHTMLChildren[j].replace(",", ";");
-                        if (individualHTMLChildren[j].startsWith(".")) {
-                            // System.out.println("I found a period!!!!!");
+                        if (individualHTMLChildren[j].startsWith(".") || 
+                                individualHTMLChildren[j].endsWith(".csv")) {
                             continue;
                         }
                         towrite = rvp1.myStringExtract(fn) + path + "\n";
