@@ -25,14 +25,13 @@ public class Permutas_Dater {
 
     public static void iteratorOverAllFiles(File[] files) throws MalformedURLException, IOException {
         for (File file : files) {
-            //System.out.println(file);
             if (file.isDirectory() && !file.getName().equals("casas")) {
                 //System.out.println(file.getName());
                 iteratorOverAllFiles(file.listFiles());
             } else {
                 if ((file.getName().equals("buscador.html")) || (file.getName().equals("index.html"))) {
+                    System.out.println(file);
                     whichTypeOfExtractor(file.getAbsolutePath());
-                    //System.out.println("something sent to codeExtractEntire");
                 }
             }
         }
@@ -59,7 +58,8 @@ public class Permutas_Dater {
         }
         String str = buf.toString();
         
-        if(str.contains("Resultados de la búsqueda de permutas en cuba.")){
+        if(str.contains("Resultados de") && str.contains("permutas") && 
+                !str.contains("renta de casas")){
             System.out.println(fn);
             newCodeExtractor(fn, str);
         }
@@ -92,6 +92,10 @@ public class Permutas_Dater {
             if (datematcher.find()) {
                 System.out.println(datematcher.group(1));
                 date = datematcher.group(1);
+            }
+            if((date.contains("am") || date.contains("pm")) && date.contains(":")){
+                System.out.println("not added to hasht1");
+                continue;
             }
             hasht1.put(code, date);
         }
